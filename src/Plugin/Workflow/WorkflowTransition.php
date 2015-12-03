@@ -27,11 +27,11 @@ class WorkflowTransition {
   protected $label;
 
   /**
-   * The "from" state.
+   * The "from" states.
    *
-   * @var \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState
+   * @var \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState[]
    */
-  protected $fromState;
+  protected $fromStates;
 
   /**
    * The "to" state.
@@ -47,15 +47,15 @@ class WorkflowTransition {
    *   The transition id.
    * @param string $label
    *   The transition label.
-   * @param \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState $from_state
-   *   The "from" state.
+   * @param \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState[] $from_states
+   *   The "from" states.
    * @param \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState $to_state
    *   The "to" state.
    */
-  public function __construct($id, $label, WorkflowState $from_state, WorkflowState $to_state) {
+  public function __construct($id, $label, array $from_states, WorkflowState $to_state) {
     $this->id = $id;
     $this->label = $label;
-    $this->fromState = $from_state;
+    $this->fromStates = $from_states;
     $this->toState = $to_state;
   }
 
@@ -80,13 +80,13 @@ class WorkflowTransition {
   }
 
   /**
-   * Gets the "from" state.
+   * Gets the "from" states.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState
-   *   The "from" state.
+   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState[]
+   *   The "from" states.
    */
-  public function getFromState() {
-    return $this->fromState;
+  public function getFromStates() {
+    return $this->fromStates;
   }
 
   /**

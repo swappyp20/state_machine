@@ -40,9 +40,12 @@ class Workflow extends PluginBase implements WorkflowInterface {
     }
     foreach ($plugin_definition['transitions'] as $id => $transition_definition) {
       $label = $transition_definition['label'];
-      $from_state = $this->states[$transition_definition['from']];
+      $from_states = [];
+      foreach ($transition_definition['from'] as $from_state) {
+        $from_states[$from_state] = $this->states[$from_state];
+      }
       $to_state = $this->states[$transition_definition['to']];
-      $this->transitions[$id] = new WorkflowTransition($id, $label, $from_state, $to_state);
+      $this->transitions[$id] = new WorkflowTransition($id, $label, $from_states, $to_state);
     }
   }
 

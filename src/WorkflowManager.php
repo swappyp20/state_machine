@@ -113,11 +113,15 @@ class WorkflowManager extends DefaultPluginManager implements CategorizingPlugin
           throw new PluginException(sprintf('The workflow transition %s must define the %s property.', $transition_id, $required_property));
         }
       }
-      foreach (['from', 'to'] as $state_property) {
-        $state_id = $transition_definition[$state_property];
-        if (!isset($definition['states'][$state_id])) {
-          throw new PluginException(sprintf('The workflow transition %s specified an invalid %s property.', $transition_id, $state_property));
+      // Validate the referenced "from" and "to" states.
+      foreach ($transition_definition['from'] as $from_state) {
+        if (!isset($definition['states'][$from_state])) {
+          throw new PluginException(sprintf('The workflow transition %s specified an invalid "from" property: %s.', $transition_id, $from_state));
         }
+      }
+      $to_state = $transition_definition['to'];
+      if (!isset($definition['states'][$to_state])) {
+        throw new PluginException(sprintf('The workflow transition %s specified an invalid "to" property.', $transition_id));
       }
     }
   }
