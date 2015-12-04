@@ -7,7 +7,6 @@
 
 namespace Drupal\commerce_workflow;
 
-use Drupal\Component\Plugin\CategorizingPluginManagerInterface;
 use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -21,12 +20,12 @@ use Drupal\Core\Plugin\Discovery\YamlDiscovery;
  * @see \Drupal\commerce_workflow\Plugin\Workflow\WorkflowInterface
  * @see plugin_api
  */
-class WorkflowManager extends DefaultPluginManager implements CategorizingPluginManagerInterface {
+class WorkflowManager extends DefaultPluginManager implements WorkflowManagerInterface {
 
   /**
    * The workflow group manager.
    *
-   * @var \Drupal\commerce_workflow\WorkflowGroupManager
+   * @var \Drupal\commerce_workflow\WorkflowGroupManagerInterface
    */
   protected $groupManager;
 
@@ -50,10 +49,10 @@ class WorkflowManager extends DefaultPluginManager implements CategorizingPlugin
    *   The module handler.
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache_backend
    *   The cache backend.
-   * @param \Drupal\commerce_workflow\WorkflowGroupManager $group_manager
+   * @param \Drupal\commerce_workflow\WorkflowGroupManagerInterface $group_manager
    *   The workflow group manager.
    */
-  public function __construct(ModuleHandlerInterface $module_handler, CacheBackendInterface $cache_backend, WorkflowGroupManager $group_manager) {
+  public function __construct(ModuleHandlerInterface $module_handler, CacheBackendInterface $cache_backend, WorkflowGroupManagerInterface $group_manager) {
     $this->moduleHandler = $module_handler;
     $this->setCacheBackend($cache_backend, 'workflow', ['workflow']);
     $this->groupManager = $group_manager;
@@ -129,22 +128,32 @@ class WorkflowManager extends DefaultPluginManager implements CategorizingPlugin
   /**
    * {@inheritdoc}
    */
-  public function getCategories() {
-    // Use workflow groups as categories.
-    $categories = array_map(function ($definition) {
-      return $definition['label'];
-    }, $this->groupManager->getDefinitions());
-    natcasesort($categories);
+  public function getGroupedLabels($entity_type_id = NULL) {
+    $definitions = $this->getSortedDefinitions($definitions);
+    $group_labels = $this->getGroupLabels($entity_type_id);
+    $grouped_definitions = [];
+    foreach ($definitions as $id => $definition) {
+      $group_id = $definition['group'];
+      if (!isset($group_labels[$group_id])) {
+        // Don't return workflows for groups ignored due to their entity type.
+        continue;
+      }
+      $group_label = $group_labels[$group_id];
+      $grouped_definitions[$group_label][$id] = $definition['label'];
+    }
 
-    return $categories;
+    return $grouped_definitions;
   }
 
   /**
-   * {@inheritdoc}
+   * Gets the sorted workflow plugin definitions.
+   *
+   * @return array
+   *   The workflow plugin definitions, sorted by group and label.
    */
-  public function getSortedDefinitions(array $definitions = NULL) {
+  protected function getSortedDefinitions() {
     // Sort the plugins first by group, then by label.
-    $definitions = isset($definitions) ? $definitions : $this->getDefinitions();
+    $definitions = $this->getDefinitions();
     uasort($definitions, function ($a, $b) {
       if ($a['group'] != $b['group']) {
         return strnatcasecmp($a['group'], $b['group']);
@@ -156,19 +165,22 @@ class WorkflowManager extends DefaultPluginManager implements CategorizingPlugin
   }
 
   /**
-   * {@inheritdoc}
+   * Gets a list of group labels for the given entity type id.
+   *
+   * @param string $entity_type_id
+   *   The entity type id.
+   *
+   * @return array
+   *   A list of groups labels keyed by id.
    */
-  public function getGroupedDefinitions(array $definitions = NULL) {
-    $definitions = $this->getSortedDefinitions($definitions);
-    $categories = $this->getCategories();
-    $grouped_definitions = [];
-    foreach ($definitions as $id => $definition) {
-      $group_id = $definition['group'];
-      $category = isset($categories[$group_id]) ? (string) $categories[$group_id] : '';
-      $grouped_definitions[$category][$id] = $definition;
-    }
+  protected function getGroupLabels($entity_type_id = NULL) {
+    $group_definitions = $this->groupManager->getDefinitionsByEntityType($entity_type_id);
+    $group_labels = array_map(function ($group_definition) {
+      return (string) $group_definition['label'];
+    }, $group_definitions);
+    natcasesort($group_labels);
 
-    return $grouped_definitions;
+    return $group_labels;
   }
 
 }

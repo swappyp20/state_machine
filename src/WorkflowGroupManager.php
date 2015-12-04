@@ -20,7 +20,7 @@ use Drupal\Core\Plugin\Discovery\YamlDiscovery;
  * @see \Drupal\commerce_workflow\Plugin\WorkflowGroup\WorkflowGroupInterface
  * @see plugin_api
  */
-class WorkflowGroupManager extends DefaultPluginManager {
+class WorkflowGroupManager extends DefaultPluginManager implements WorkflowGroupManagerInterface {
 
   /**
    * Default values for each workflow_group plugin.
@@ -73,6 +73,20 @@ class WorkflowGroupManager extends DefaultPluginManager {
         throw new PluginException(sprintf('The workflow_group %s must define the %s property.', $plugin_id, $required_property));
       }
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDefinitionsByEntityType($entity_type_id = NULL) {
+    $definitions = $this->getDefinitions();
+    if ($entity_type_id) {
+      $definitions = array_filter($definitions, function ($definition) use ($entity_type_id) {
+        return $definition['entity_type'] == $entity_type_id;
+      });
+    }
+
+    return $definitions;
   }
 
 }
