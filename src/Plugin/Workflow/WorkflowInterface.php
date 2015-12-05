@@ -7,6 +7,8 @@
 
 namespace Drupal\commerce_workflow\Plugin\Workflow;
 
+use Drupal\Core\Entity\EntityInterface;
+
 /**
  * Defines the interface for workflows.
  */
@@ -65,5 +67,32 @@ interface WorkflowInterface {
    *   The requested transition, or NULL if not found.
    */
   public function getTransition($id);
+
+  /**
+   * Gets the possible workflow transitions for the given state id.
+   *
+   * Note that a possible transition might not be allowed (because of a guard
+   * returning false).
+   *
+   * @param string $state_id
+   *   The state id.
+   *
+   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition[]
+   *   The possible transitions.
+   */
+  public function getPossibleTransitions($state_id);
+
+  /**
+   * Gets the allowed workflow transitions for the given state id.
+   *
+   * @param string $state_id
+   *   The state id.
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The parent entity.
+   *
+   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition[]
+   *   The allowed transitions.
+   */
+  public function getAllowedTransitions($state_id, EntityInterface $entity);
 
 }

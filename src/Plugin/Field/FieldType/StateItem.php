@@ -124,18 +124,24 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
    * {@inheritdoc}
    */
   public function getSettableValues(AccountInterface $account = NULL) {
-    $states = $this->getWorkflow()->getStates();
-    return array_keys($states);
+    return array_keys($this->getSettableOptions($account));
   }
 
   /**
    * {@inheritdoc}
    */
   public function getSettableOptions(AccountInterface $account = NULL) {
-    $states = $this->getWorkflow()->getStates();
-    $state_labels = array_map(function ($state) {
-      return $state->getLabel();
-    }, $states);
+    $workflow = $this->getWorkflow();
+    $state_labels = [];
+    if ($this->value) {
+      // The current state is always allowed.
+      $state_labels[$this->value] = $workflow->getState($this->value)->getLabel();
+    }
+    $transitions = $workflow->getAllowedTransitions($this->value, $this->getEntity());
+    foreach ($transitions as $transition) {
+      $state = $transition->getToState();
+      $state_labels[$state->getId()] = $state->getLabel();
+    }
     return $state_labels;
   }
 

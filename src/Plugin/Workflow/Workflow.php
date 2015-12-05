@@ -7,6 +7,7 @@
 
 namespace Drupal\commerce_workflow\Plugin\Workflow;
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Plugin\PluginBase;
 
 /**
@@ -89,6 +90,53 @@ class Workflow extends PluginBase implements WorkflowInterface {
    */
   public function getTransition($id) {
     return isset($this->transitions[$id]) ? $this->transitions[$id] : NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getPossibleTransitions($state_id) {
+    if (empty($state_id)) {
+      return $this->transitions;
+    }
+    $possible_transitions = [];
+    foreach ($this->transitions as $id => $transition) {
+      if (array_key_exists($state_id, $transition->getFromStates())) {
+        $possible_transitions[$id] = $transition;
+      }
+    }
+
+    return $possible_transitions;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getAllowedTransitions($state_id, EntityInterface $entity) {
+    $allowed_transitions = [];
+    foreach ($this->getPossibleTransitions($state_id) as $transition_id => $transition) {
+      if ($this->isTransitionAllowed($transition, $entity)) {
+        $allowed_transitions[$transition_id] = $transition;
+      }
+    }
+
+    return $allowed_transitions;
+  }
+
+  /**
+   * Gets whether the given transition is allowed.
+   *
+   * @param \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition $transition
+   *   The transition.
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The parent entity.
+   *
+   * @return bool
+   *   TRUE if the transition is allowed, FALSE otherwise.
+   */
+  protected function isTransitionAllowed(WorkflowTransition $transition, EntityInterface $entity) {
+    // @todo
+    return TRUE;
   }
 
 }
