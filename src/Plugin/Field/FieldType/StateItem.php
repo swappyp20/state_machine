@@ -105,18 +105,22 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
    * {@inheritdoc}
    */
   public function getPossibleValues(AccountInterface $account = NULL) {
-    $states = $this->getWorkflow()->getStates();
-    return array_keys($states);
+    return array_keys($this->getPossibleOptions($account));
   }
 
   /**
    * {@inheritdoc}
    */
   public function getPossibleOptions(AccountInterface $account = NULL) {
-    $states = $this->getWorkflow()->getStates();
+    $workflow = $this->getWorkflow();
+    if (!$workflow) {
+      // The workflow is not known yet, the field is probably being created.
+      return [];
+    }
     $state_labels = array_map(function ($state) {
       return $state->getLabel();
-    }, $states);
+    }, $workflow->getStates());
+
     return $state_labels;
   }
 
@@ -132,6 +136,10 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
    */
   public function getSettableOptions(AccountInterface $account = NULL) {
     $workflow = $this->getWorkflow();
+    if (!$workflow) {
+      // The workflow is not known yet, the field is probably being created.
+      return [];
+    }
     $state_labels = [];
     if ($this->value) {
       // The current state is always allowed.
@@ -142,14 +150,15 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
       $state = $transition->getToState();
       $state_labels[$state->getId()] = $state->getLabel();
     }
+
     return $state_labels;
   }
 
   /**
    * Gets the workflow used by the current field.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowInterface
-   *   The workflow.
+   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowInterface|false
+   *   The workflow, or FALSE if unknown at this time.
    */
   protected function getWorkflow() {
     $field_definition = $this->getFieldDefinition();
@@ -164,19 +173,20 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
   /**
    * Loads the workflow used by the current field.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowInterface
-   *   The workflow.
+   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowInterface|false
+   *   The workflow, or FALSE if unknown at this time.
    */
   protected function loadWorkflow() {
+    $workflow = FALSE;
     if ($callback = $this->getSetting('workflow_callback')) {
       $workflow = call_user_func($callback, $this->getEntity());
       if (!$workflow) {
         throw new \RuntimeException(sprintf('%s did not return a workflow.', $callback));
       }
     }
-    else {
+    elseif ($workflow_id = $this->getSetting('workflow')) {
       $workflow_manager = \Drupal::service('plugin.manager.workflow');
-      $workflow = $workflow_manager->createInstance($this->getSetting('workflow'));
+      $workflow = $workflow_manager->createInstance($workflow_id);
     }
 
     return $workflow;
