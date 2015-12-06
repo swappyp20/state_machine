@@ -104,6 +104,17 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
   /**
    * {@inheritdoc}
    */
+  public function applyDefaultValue($notify = TRUE) {
+    if ($workflow = $this->getWorkflow()) {
+      $initial_state = reset($workflow->getStates());
+      $this->setValue(['value' => $initial_state->getId()], $notify);
+    }
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getPossibleValues(AccountInterface $account = NULL) {
     return array_keys($this->getPossibleOptions($account));
   }
@@ -140,12 +151,16 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
       // The workflow is not known yet, the field is probably being created.
       return [];
     }
-    $state_labels = [];
-    if ($this->value) {
+    $entity = $this->getEntity();
+    // $this->value is unpopulated due to https://www.drupal.org/node/2629932
+    $field_name = $this->getFieldDefinition()->getName();
+    $value = $entity->get($field_name)->value;
+
+    $state_labels = [
       // The current state is always allowed.
-      $state_labels[$this->value] = $workflow->getState($this->value)->getLabel();
-    }
-    $transitions = $workflow->getAllowedTransitions($this->value, $this->getEntity());
+      $value => $workflow->getState($value)->getLabel(),
+    ];
+    $transitions = $workflow->getAllowedTransitions($value, $entity);
     foreach ($transitions as $transition) {
       $state = $transition->getToState();
       $state_labels[$state->getId()] = $state->getLabel();
