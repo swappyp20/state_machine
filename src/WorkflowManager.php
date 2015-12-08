@@ -129,7 +129,7 @@ class WorkflowManager extends DefaultPluginManager implements WorkflowManagerInt
    * {@inheritdoc}
    */
   public function getGroupedLabels($entity_type_id = NULL) {
-    $definitions = $this->getSortedDefinitions($definitions);
+    $definitions = $this->getSortedDefinitions();
     $group_labels = $this->getGroupLabels($entity_type_id);
     $grouped_definitions = [];
     foreach ($definitions as $id => $definition) {

@@ -11,7 +11,6 @@ use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\StringTranslation\TranslationWrapper;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\OptionsProviderInterface;
 use Drupal\Core\Validation\Plugin\Validation\Constraint\AllowedValuesConstraint;
@@ -62,7 +61,7 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     $properties['value'] = DataDefinition::create('string')
-      ->setLabel(new TranslationWrapper('State'))
+      ->setLabel(t('State'))
       ->setRequired(TRUE);
 
     return $properties;
