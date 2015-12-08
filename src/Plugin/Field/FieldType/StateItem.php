@@ -7,8 +7,6 @@
 
 namespace Drupal\commerce_workflow\Plugin\Field\FieldType;
 
-use Drupal\Component\Utility\Random;
-use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -16,6 +14,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\TranslationWrapper;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\OptionsProviderInterface;
+use Drupal\Core\Validation\Plugin\Validation\Constraint\AllowedValuesConstraint;
 
 /**
  * Plugin implementation of the 'state' field type.
@@ -36,6 +35,13 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
    * @var array
    */
   protected static $workflows = [];
+
+  /**
+   * The initial value, used to validate state changes.
+   *
+   * @var string
+   */
+  protected $initialValue;
 
   /**
    * {@inheritdoc}
@@ -60,6 +66,23 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
       ->setRequired(TRUE);
 
     return $properties;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getConstraints() {
+    $constraints = parent::getConstraints();
+    // Replace the 'AllowedValuesConstraint' constraint with the 'State' one.
+    foreach ($constraints as $key => $constraint) {
+      if ($constraint instanceof AllowedValuesConstraint) {
+        unset($constraints[$key]);
+      }
+    }
+    $manager = \Drupal::typedDataManager()->getValidationConstraintManager();
+    $constraints[] = $manager->create('State', []);
+
+    return $constraints;
   }
 
   /**
@@ -98,6 +121,8 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
    * {@inheritdoc}
    */
   public function isEmpty() {
+    // Note that in this field's case the value will never be empty
+    // because of the default returned in applyDefaultValue().
     return $this->value === NULL || $this->value === '';
   }
 
@@ -110,6 +135,32 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
       $this->setValue(['value' => $initial_state->getId()], $notify);
     }
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setValue($values, $notify = TRUE) {
+    if (empty($this->initialValue)) {
+      // Track the initial field value to allow isValid() to validate changes.
+      $this->initialValue = $values['value'];
+    }
+    parent::setValue($values, $notify);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function postSave($update) {
+    $this->initialValue = $this->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isValid() {
+    $allowed_states = $this->getAllowedStates($this->initialValue);
+    return isset($allowed_states[$this->value]);
   }
 
   /**
@@ -146,36 +197,49 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
    * {@inheritdoc}
    */
   public function getSettableOptions(AccountInterface $account = NULL) {
-    $workflow = $this->getWorkflow();
-    if (!$workflow) {
-      // The workflow is not known yet, the field is probably being created.
-      return [];
-    }
-    $entity = $this->getEntity();
     // $this->value is unpopulated due to https://www.drupal.org/node/2629932
     $field_name = $this->getFieldDefinition()->getName();
-    $value = $entity->get($field_name)->value;
-
-    $state_labels = [
-      // The current state is always allowed.
-      $value => $workflow->getState($value)->getLabel(),
-    ];
-    $transitions = $workflow->getAllowedTransitions($value, $entity);
-    foreach ($transitions as $transition) {
-      $state = $transition->getToState();
-      $state_labels[$state->getId()] = $state->getLabel();
-    }
+    $value = $this->getEntity()->get($field_name)->value;
+    $allowed_states = $this->getAllowedStates($value);
+    $state_labels = array_map(function ($state) {
+      return $state->getLabel();
+    }, $allowed_states);
 
     return $state_labels;
   }
 
   /**
-   * Gets the workflow used by the current field.
+   * Gets the next allowed states for the current field value.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowInterface|false
-   *   The workflow, or FALSE if unknown at this time.
+   * @param string $value
+   *   The field value, representing the state id.
+   *
+   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState[]
+   *   The allowed states.
    */
-  protected function getWorkflow() {
+  protected function getAllowedStates($value) {
+    $workflow = $this->getWorkflow();
+    if (!$workflow) {
+      // The workflow is not known yet, the field is probably being created.
+      return [];
+    }
+    $allowed_states = [
+      // The current state is always allowed.
+      $value => $workflow->getState($value),
+    ];
+    $transitions = $workflow->getAllowedTransitions($value, $this->getEntity());
+    foreach ($transitions as $transition) {
+      $state = $transition->getToState();
+      $allowed_states[$state->getId()] = $state;
+    }
+
+    return $allowed_states;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getWorkflow() {
     $field_definition = $this->getFieldDefinition();
     $definition_id = spl_object_hash($field_definition);
     if (!isset(static::$workflows[$definition_id])) {
