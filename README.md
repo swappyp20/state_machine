@@ -21,10 +21,59 @@ Architecture
 Workflow and WorkflowGroup are plugins defined in YAML, similar to menu links.
 This leaves room for a future entity-based UI.
 
-The current state is stored in a StateItem field.
+Example yourmodule.workflow_groups.yml:
+```yaml
+order:
+  label: Order
+  entity_type: commerce_order
+```
+Example yourmodule.workflows.yml:
+```yaml
+default:
+  id: default
+  label: Default
+  group: order
+  states:
+    new:
+      label: New
+    fulfillment:
+      label: Fulfilment
+    completed:
+      label: Completed
+    canceled:
+      label: Canceled
+  transitions:
+    create:
+      label: Create
+      from: [new]
+      to:   fulfillment
+    fulfill:
+      label: Fulfill
+      from: [fulfillment]
+      to: completed
+    cancel:
+      label: Cancel
+      from: [new, validation, fulfillment]
+      to:   canceled
+```
+
+The current state is stored in a [StateItem](https://github.com/bojanz/commerce_workflow/blob/8.x-1.x/src/Plugin/Field/FieldType/StateItem.php) field.
 A field setting specifies the used workflow, or a value callback that allows
 the workflow to be resolved at runtime (checkout workflow based on the used plugin, etc.
+
+A validator is provided that ensures that the specified state is valid (exists in the
+workflow and is in the allowed transitions).
+
+Currently uses only the options_select widget.
+A dropbutton node-like widget could be provided, but was initially omitted becase
+it only makes sense for the main entity workflow, which nodes already have (published status),
+while Commerce is pursuing a different UX.
+
+A formatter will be provided that outputs a form with the allowed transitions,
+allowing workflow changes to happen outside of the edit form.
 
 Credits
 -------
 Initial code by Pedro Cambra.
+
+Inspired by https://github.com/winzou/state-machine
