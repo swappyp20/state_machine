@@ -18,7 +18,7 @@ by validation and widgets/formatters.
 
 Architecture
 ------------
-Workflow and WorkflowGroup are plugins defined in YAML, similar to menu links.
+[Workflow](https://github.com/bojanz/commerce_workflow/blob/8.x-1.x/src/Plugin/Workflow/WorkflowInterface.php) and [WorkflowGroup](https://github.com/bojanz/commerce_workflow/blob/8.x-1.x/src/Plugin/WorkflowGroup/WorkflowGroupInterface.php) are plugins defined in YAML, similar to menu links.
 This leaves room for a future entity-based UI.
 
 Example yourmodule.workflow_groups.yml:
@@ -27,6 +27,8 @@ order:
   label: Order
   entity_type: commerce_order
 ```
+Groups can also override the default workflow class, for more advanced use cases.
+
 Example yourmodule.workflows.yml:
 ```yaml
 default:
