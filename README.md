@@ -57,6 +57,16 @@ default:
       to:   canceled
 ```
 
+Transitions can be further restricted by [guards](https://github.com/bojanz/commerce_workflow/blob/8.x-1.x/src/WorkflowGuard/WorkflowGuardInterface.php), which are implemented as tagged services:
+```yaml
+  mymodule.fulfillment_guard:
+    class: Drupal\mymodule\WorkflowGuard\FulfillmentGuard
+    tags:
+      - { name: commerce_workflow.workflow_guard, group: order }
+```
+The group argument allows the guard factory to only instantiate the guards relevant
+to a specific workflow group.
+
 The current state is stored in a [StateItem](https://github.com/bojanz/commerce_workflow/blob/8.x-1.x/src/Plugin/Field/FieldType/StateItem.php) field.
 A field setting specifies the used workflow, or a value callback that allows
 the workflow to be resolved at runtime (checkout workflow based on the used plugin, etc.

@@ -7,13 +7,23 @@
 
 namespace Drupal\commerce_workflow\Plugin\Workflow;
 
+use Drupal\commerce_workflow\WorkflowGuard\WorkflowGuardFactoryInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\PluginBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines the class for workflows.
  */
-class Workflow extends PluginBase implements WorkflowInterface {
+class Workflow extends PluginBase implements WorkflowInterface, ContainerFactoryPluginInterface {
+
+  /**
+   * The workflow guard factory.
+   *
+   * @var \Drupal\commerce_workflow\WorkflowGuard\WorkflowGuardFactoryInterface
+   */
+  protected $guardFactory;
 
   /**
    * The initialized states.
@@ -30,11 +40,21 @@ class Workflow extends PluginBase implements WorkflowInterface {
   protected $transitions = [];
 
   /**
-   * {@inheritdoc}
+   * Constructs a new Workflow object.
+   *
+   * @param array $configuration
+   *   The plugin configuration.
+   * @param string $plugin_id
+   *   The workflow plugin_id.
+   * @param mixed $plugin_definition
+   *   The workflow plugin implementation definition.
+   * @param \Drupal\commerce_workflow\WorkflowGuard\WorkflowGuardFactoryInterface $guard_factory
+   *   The workflow guard factory.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, WorkflowGuardFactoryInterface $guard_factory) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
+    $this->guardFactory = $guard_factory;
     // Populate value objects for states and transitions.
     foreach ($plugin_definition['states'] as $id => $state_definition) {
       $this->states[$id] = new WorkflowState($id, $state_definition['label']);
@@ -48,6 +68,18 @@ class Workflow extends PluginBase implements WorkflowInterface {
       $to_state = $this->states[$transition_definition['to']];
       $this->transitions[$id] = new WorkflowTransition($id, $label, $from_states, $to_state);
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('commerce_workflow.workflow_guard_factory')
+    );
   }
 
   /**
@@ -135,7 +167,12 @@ class Workflow extends PluginBase implements WorkflowInterface {
    *   TRUE if the transition is allowed, FALSE otherwise.
    */
   protected function isTransitionAllowed(WorkflowTransition $transition, EntityInterface $entity) {
-    // @todo
+    foreach ($this->guardFactory->get($this->getGroup()) as $guard) {
+      if ($guard->allowed($transition, $this, $entity) === FALSE) {
+        return FALSE;
+      }
+    }
+
     return TRUE;
   }
 

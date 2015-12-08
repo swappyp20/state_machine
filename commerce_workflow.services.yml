@@ -1,4 +1,8 @@
 services:
+  commerce_workflow.workflow_guard_factory:
+    class: Drupal\commerce_workflow\WorkflowGuard\WorkflowGuardFactory
+    arguments: ['@service_container']
+
   plugin.manager.workflow:
     class: Drupal\commerce_workflow\WorkflowManager
     arguments: ['@module_handler', '@cache.discovery', '@plugin.manager.workflow_group']
