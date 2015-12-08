@@ -130,7 +130,8 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
    */
   public function applyDefaultValue($notify = TRUE) {
     if ($workflow = $this->getWorkflow()) {
-      $initial_state = reset($workflow->getStates());
+      $states = $workflow->getStates();
+      $initial_state = reset($states);
       $this->setValue(['value' => $initial_state->getId()], $notify);
     }
     return $this;
