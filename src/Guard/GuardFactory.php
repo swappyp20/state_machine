@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Default implementation of the guard factory.
  */
-class GuardFactory {
+class GuardFactory implements GuardFactoryInterface {
 
   /**
    * The service container.
