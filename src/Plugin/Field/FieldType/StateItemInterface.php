@@ -7,20 +7,34 @@
 
 namespace Drupal\commerce_workflow\Plugin\Field\FieldType;
 
-use Drupal\Core\TypedData\OptionsProviderInterface;
-
 /**
  * Defines the interface for state item fields.
  */
-interface StateItemInterface extends OptionsProviderInterface {
+interface StateItemInterface {
 
   /**
-   * Gets the workflow used by the current field.
+   * Gets the workflow used by the field.
    *
    * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowInterface|false
    *   The workflow, or FALSE if unknown at this time.
    */
   public function getWorkflow();
+
+  /**
+   * Gets the allowed transitions for the current state.
+   *
+   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition[]
+   *   The allowed transitions.
+   */
+  public function getTransitions();
+
+  /**
+   * Applies the given transition, changing the current state.
+   *
+   * @param \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition $transition
+   *   The transition to apply.
+   */
+  public function applyTransition(WorkflowTransition $transition);
 
   /**
    * Gets whether the current state is valid.

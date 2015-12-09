@@ -26,7 +26,7 @@ use Drupal\Core\Validation\Plugin\Validation\Constraint\AllowedValuesConstraint;
  *   default_formatter = "list_default"
  * )
  */
-class StateItem extends FieldItemBase implements OptionsProviderInterface {
+class StateItem extends FieldItemBase implements StateItemInterface, OptionsProviderInterface {
 
   /**
    * A cache of loaded workflows, keyed by field definition hash.
@@ -209,7 +209,7 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
   }
 
   /**
-   * Gets the next allowed states for the current field value.
+   * Gets the next allowed states for the given field value.
    *
    * @param string $value
    *   The field value, representing the state id.
@@ -247,6 +247,24 @@ class StateItem extends FieldItemBase implements OptionsProviderInterface {
     }
 
     return static::$workflows[$definition_id];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTransitions() {
+    $transitions = [];
+    if ($workflow = $this->getWorkflow()) {
+      $transitions = $workflow->getAllowedTransitions($this->value, $this->getEntity());
+    }
+    return $transitions;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function applyTransition(WorkflowTransition $transition) {
+    $this->setValue(['value' => $transition->getToState()->getId()]);
   }
 
   /**
