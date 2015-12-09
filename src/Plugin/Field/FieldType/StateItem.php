@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\Plugin\Field\FieldType\StateItem.
+ * Contains \Drupal\state_machine\Plugin\Field\FieldType\StateItem.
  */
 
-namespace Drupal\commerce_workflow\Plugin\Field\FieldType;
+namespace Drupal\state_machine\Plugin\Field\FieldType;
 
 use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
@@ -214,7 +214,7 @@ class StateItem extends FieldItemBase implements StateItemInterface, OptionsProv
    * @param string $value
    *   The field value, representing the state id.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState[]
+   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowState[]
    *   The allowed states.
    */
   protected function getAllowedStates($value) {
@@ -270,7 +270,7 @@ class StateItem extends FieldItemBase implements StateItemInterface, OptionsProv
   /**
    * Loads the workflow used by the current field.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowInterface|false
+   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowInterface|false
    *   The workflow, or FALSE if unknown at this time.
    */
   protected function loadWorkflow() {

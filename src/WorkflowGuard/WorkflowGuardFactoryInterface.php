@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\WorkflowGuard\WorkflowGuardFactoryInterface.
+ * Contains \Drupal\state_machine\WorkflowGuard\WorkflowGuardFactoryInterface.
  */
 
-namespace Drupal\commerce_workflow\WorkflowGuard;
+namespace Drupal\state_machine\WorkflowGuard;
 
 /**
  * Defines the interface for workflow guard factories.
@@ -18,7 +18,7 @@ interface WorkflowGuardFactoryInterface {
    * @param string $group_id
    *   The group id.
    *
-   * @return \Drupal\commerce_workflow\WorkflowGuard\WorkflowGuardInterface[]
+   * @return \Drupal\state_machine\WorkflowGuard\WorkflowGuardInterface[]
    */
   public function get($group_id);
 

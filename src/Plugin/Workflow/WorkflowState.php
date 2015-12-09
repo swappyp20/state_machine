@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState.
+ * Contains \Drupal\state_machine\Plugin\Workflow\WorkflowState.
  */
 
-namespace Drupal\commerce_workflow\Plugin\Workflow;
+namespace Drupal\state_machine\Plugin\Workflow;
 
 /**
  * Defines the class for workflow states.

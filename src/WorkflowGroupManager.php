@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\WorkflowGroupManager.
+ * Contains \Drupal\state_machine\WorkflowGroupManager.
  */
 
-namespace Drupal\commerce_workflow;
+namespace Drupal\state_machine;
 
 use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Core\Cache\CacheBackendInterface;
@@ -17,7 +17,7 @@ use Drupal\Core\Plugin\Discovery\YamlDiscovery;
 /**
  * Manages discovery and instantiation of workflow_group plugins.
  *
- * @see \Drupal\commerce_workflow\Plugin\WorkflowGroup\WorkflowGroupInterface
+ * @see \Drupal\state_machine\Plugin\WorkflowGroup\WorkflowGroupInterface
  * @see plugin_api
  */
 class WorkflowGroupManager extends DefaultPluginManager implements WorkflowGroupManagerInterface {
@@ -31,9 +31,9 @@ class WorkflowGroupManager extends DefaultPluginManager implements WorkflowGroup
     'id' => '',
     'label' => '',
     'entity_type' => '',
-    'class' => 'Drupal\commerce_workflow\Plugin\WorkflowGroup\WorkflowGroup',
+    'class' => 'Drupal\state_machine\Plugin\WorkflowGroup\WorkflowGroup',
     // Groups can override the default workflow class for advanced use cases.
-    'workflow_class' => '\Drupal\commerce_workflow\Plugin\Workflow\Workflow',
+    'workflow_class' => '\Drupal\state_machine\Plugin\Workflow\Workflow',
   ];
 
   /**

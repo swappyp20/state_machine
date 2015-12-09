@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\WorkflowManagerInterface.
+ * Contains \Drupal\state_machine\WorkflowManagerInterface.
  */
 
-namespace Drupal\commerce_workflow;
+namespace Drupal\state_machine;
 
 use Drupal\Component\Plugin\PluginManagerInterface;
 

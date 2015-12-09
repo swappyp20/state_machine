@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\DependencyInjection\Compiler\WorkflowGuardsPass.
+ * Contains \Drupal\state_machine\DependencyInjection\Compiler\WorkflowGuardsPass.
  */
 
-namespace Drupal\commerce_workflow\DependencyInjection\Compiler;
+namespace Drupal\state_machine\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -22,7 +22,7 @@ class WorkflowGuardsPass implements CompilerPassInterface {
    */
   public function process(ContainerBuilder $container) {
     $guards = [];
-    foreach ($container->findTaggedServiceIds('commerce_workflow.workflow_guard') as $id => $attributes) {
+    foreach ($container->findTaggedServiceIds('state_machine.workflow_guard') as $id => $attributes) {
       if (empty($attributes[0]['group'])) {
         continue;
       }
@@ -30,7 +30,7 @@ class WorkflowGuardsPass implements CompilerPassInterface {
       $guards[$attributes[0]['group']][] = $id;
     }
 
-    $definition = $container->getDefinition('commerce_workflow.workflow_guard_factory');
+    $definition = $container->getDefinition('state_machine.workflow_guard_factory');
     $definition->addArgument($guards);
   }
 

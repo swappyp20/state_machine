@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\Plugin\Validation\Constraint\StateConstraintValidator.
+ * Contains \Drupal\state_machine\Plugin\Validation\Constraint\StateConstraintValidator.
  */
 
-namespace Drupal\commerce_workflow\Plugin\Validation\Constraint;
+namespace Drupal\state_machine\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -13,7 +13,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 /**
  * Validates the State constraint.
  *
- * @see \Drupal\commerce_workflow\Plugin\Field\FieldType\StateItemInterface::isValid()
+ * @see \Drupal\state_machine\Plugin\Field\FieldType\StateItemInterface::isValid()
  */
 class StateConstraintValidator extends ConstraintValidator {
 

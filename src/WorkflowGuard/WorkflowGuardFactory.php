@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\WorkflowGuard\WorkflowGuardFactory.
+ * Contains \Drupal\state_machine\WorkflowGuard\WorkflowGuardFactory.
  */
 
-namespace Drupal\commerce_workflow\WorkflowGuard;
+namespace Drupal\state_machine\WorkflowGuard;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

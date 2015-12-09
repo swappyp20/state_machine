@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\Plugin\WorkflowGroup\WorkflowInterface.
+ * Contains \Drupal\state_machine\Plugin\WorkflowGroup\WorkflowInterface.
  */
 
-namespace Drupal\commerce_workflow\Plugin\Workflow;
+namespace Drupal\state_machine\Plugin\Workflow;
 
 use Drupal\Core\Entity\EntityInterface;
 
@@ -33,7 +33,7 @@ interface WorkflowInterface {
   /**
    * Gets the workflow states.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState[]
+   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowState[]
    *   The states.
    */
   public function getStates();
@@ -44,7 +44,7 @@ interface WorkflowInterface {
    * @param string $id
    *   The state id.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState|null
+   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowState|null
    *   The requested state, or NULL if not found.
    */
   public function getState($id);
@@ -52,7 +52,7 @@ interface WorkflowInterface {
   /**
    * Gets the workflow transitions.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition[]
+   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowTransition[]
    *   The transitions.
    */
   public function getTransitions();
@@ -63,7 +63,7 @@ interface WorkflowInterface {
    * @param string $id
    *   The transition id.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition|null
+   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowTransition|null
    *   The requested transition, or NULL if not found.
    */
   public function getTransition($id);
@@ -77,7 +77,7 @@ interface WorkflowInterface {
    * @param string $state_id
    *   The state id.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition[]
+   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowTransition[]
    *   The possible transitions.
    */
   public function getPossibleTransitions($state_id);
@@ -90,7 +90,7 @@ interface WorkflowInterface {
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The parent entity.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition[]
+   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowTransition[]
    *   The allowed transitions.
    */
   public function getAllowedTransitions($state_id, EntityInterface $entity);

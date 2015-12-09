@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\Plugin\Field\FieldType\StateItemInterface.
+ * Contains \Drupal\state_machine\Plugin\Field\FieldType\StateItemInterface.
  */
 
-namespace Drupal\commerce_workflow\Plugin\Field\FieldType;
+namespace Drupal\state_machine\Plugin\Field\FieldType;
 
 /**
  * Defines the interface for state item fields.
@@ -15,7 +15,7 @@ interface StateItemInterface {
   /**
    * Gets the workflow used by the field.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowInterface|false
+   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowInterface|false
    *   The workflow, or FALSE if unknown at this time.
    */
   public function getWorkflow();
@@ -23,7 +23,7 @@ interface StateItemInterface {
   /**
    * Gets the allowed transitions for the current state.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition[]
+   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowTransition[]
    *   The allowed transitions.
    */
   public function getTransitions();
@@ -31,7 +31,7 @@ interface StateItemInterface {
   /**
    * Applies the given transition, changing the current state.
    *
-   * @param \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition $transition
+   * @param \Drupal\state_machine\Plugin\Workflow\WorkflowTransition $transition
    *   The transition to apply.
    */
   public function applyTransition(WorkflowTransition $transition);
@@ -46,7 +46,7 @@ interface StateItemInterface {
    * changes internally, and answer via this method if the current state is
    * valid.
    *
-   * @see \Drupal\commerce_workflow\Plugin\Validation\Constraint\StateConstraintValidator
+   * @see \Drupal\state_machine\Plugin\Validation\Constraint\StateConstraintValidator
    *
    * @return bool
    *   TRUE if the current state is valid, FALSE otherwise.

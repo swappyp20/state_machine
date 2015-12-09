@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\Plugin\Validation\Constraint\StateConstraint.
+ * Contains \Drupal\state_machine\Plugin\Validation\Constraint\StateConstraint.
  */
 
-namespace Drupal\commerce_workflow\Plugin\Validation\Constraint;
+namespace Drupal\state_machine\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
 

@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\Plugin\Workflow\Workflow.
+ * Contains \Drupal\state_machine\Plugin\Workflow\Workflow.
  */
 
-namespace Drupal\commerce_workflow\Plugin\Workflow;
+namespace Drupal\state_machine\Plugin\Workflow;
 
-use Drupal\commerce_workflow\WorkflowGuard\WorkflowGuardFactoryInterface;
+use Drupal\state_machine\WorkflowGuard\WorkflowGuardFactoryInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\PluginBase;
@@ -21,21 +21,21 @@ class Workflow extends PluginBase implements WorkflowInterface, ContainerFactory
   /**
    * The workflow guard factory.
    *
-   * @var \Drupal\commerce_workflow\WorkflowGuard\WorkflowGuardFactoryInterface
+   * @var \Drupal\state_machine\WorkflowGuard\WorkflowGuardFactoryInterface
    */
   protected $guardFactory;
 
   /**
    * The initialized states.
    *
-   * @var \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState[]
+   * @var \Drupal\state_machine\Plugin\Workflow\WorkflowState[]
    */
   protected $states = [];
 
   /**
    * The initialized transitions.
    *
-   * @var \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition[]
+   * @var \Drupal\state_machine\Plugin\Workflow\WorkflowTransition[]
    */
   protected $transitions = [];
 
@@ -48,7 +48,7 @@ class Workflow extends PluginBase implements WorkflowInterface, ContainerFactory
    *   The workflow plugin_id.
    * @param mixed $plugin_definition
    *   The workflow plugin implementation definition.
-   * @param \Drupal\commerce_workflow\WorkflowGuard\WorkflowGuardFactoryInterface $guard_factory
+   * @param \Drupal\state_machine\WorkflowGuard\WorkflowGuardFactoryInterface $guard_factory
    *   The workflow guard factory.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, WorkflowGuardFactoryInterface $guard_factory) {
@@ -78,7 +78,7 @@ class Workflow extends PluginBase implements WorkflowInterface, ContainerFactory
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('commerce_workflow.workflow_guard_factory')
+      $container->get('state_machine.workflow_guard_factory')
     );
   }
 
@@ -158,7 +158,7 @@ class Workflow extends PluginBase implements WorkflowInterface, ContainerFactory
   /**
    * Gets whether the given transition is allowed.
    *
-   * @param \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition $transition
+   * @param \Drupal\state_machine\Plugin\Workflow\WorkflowTransition $transition
    *   The transition.
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The parent entity.

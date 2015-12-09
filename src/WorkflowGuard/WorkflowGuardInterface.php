@@ -2,13 +2,13 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\WorkflowGuard\WorkflowGuardInterface.
+ * Contains \Drupal\state_machine\WorkflowGuard\WorkflowGuardInterface.
  */
 
-namespace Drupal\commerce_workflow\WorkflowGuard;
+namespace Drupal\state_machine\WorkflowGuard;
 
-use Drupal\commerce_workflow\Plugin\Workflow\WorkflowInterface;
-use Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition;
+use Drupal\state_machine\Plugin\Workflow\WorkflowInterface;
+use Drupal\state_machine\Plugin\Workflow\WorkflowTransition;
 use Drupal\Core\Entity\EntityInterface;
 
 /**
@@ -25,9 +25,9 @@ interface WorkflowGuardInterface {
   /**
    * Checks whether the given transition is allowed.
    *
-   * @param \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition $transition
+   * @param \Drupal\state_machine\Plugin\Workflow\WorkflowTransition $transition
    *   The transition.
-   * @param \Drupal\commerce_workflow\Plugin\Workflow\WorkflowInterface $workflow
+   * @param \Drupal\state_machine\Plugin\Workflow\WorkflowInterface $workflow
    *   The workflow.
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The parent entity.

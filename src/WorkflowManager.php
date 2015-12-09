@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\WorkflowManager.
+ * Contains \Drupal\state_machine\WorkflowManager.
  */
 
-namespace Drupal\commerce_workflow;
+namespace Drupal\state_machine;
 
 use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Core\Cache\CacheBackendInterface;
@@ -17,7 +17,7 @@ use Drupal\Core\Plugin\Discovery\YamlDiscovery;
 /**
  * Manages discovery and instantiation of workflow plugins.
  *
- * @see \Drupal\commerce_workflow\Plugin\Workflow\WorkflowInterface
+ * @see \Drupal\state_machine\Plugin\Workflow\WorkflowInterface
  * @see plugin_api
  */
 class WorkflowManager extends DefaultPluginManager implements WorkflowManagerInterface {
@@ -25,7 +25,7 @@ class WorkflowManager extends DefaultPluginManager implements WorkflowManagerInt
   /**
    * The workflow group manager.
    *
-   * @var \Drupal\commerce_workflow\WorkflowGroupManagerInterface
+   * @var \Drupal\state_machine\WorkflowGroupManagerInterface
    */
   protected $groupManager;
 
@@ -49,7 +49,7 @@ class WorkflowManager extends DefaultPluginManager implements WorkflowManagerInt
    *   The module handler.
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache_backend
    *   The cache backend.
-   * @param \Drupal\commerce_workflow\WorkflowGroupManagerInterface $group_manager
+   * @param \Drupal\state_machine\WorkflowGroupManagerInterface $group_manager
    *   The workflow group manager.
    */
   public function __construct(ModuleHandlerInterface $module_handler, CacheBackendInterface $cache_backend, WorkflowGroupManagerInterface $group_manager) {

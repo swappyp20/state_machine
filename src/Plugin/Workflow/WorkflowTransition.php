@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\Plugin\Workflow\WorkflowTransition.
+ * Contains \Drupal\state_machine\Plugin\Workflow\WorkflowTransition.
  */
 
-namespace Drupal\commerce_workflow\Plugin\Workflow;
+namespace Drupal\state_machine\Plugin\Workflow;
 
 /**
  * Defines the class for workflow transitions.
@@ -29,14 +29,14 @@ class WorkflowTransition {
   /**
    * The "from" states.
    *
-   * @var \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState[]
+   * @var \Drupal\state_machine\Plugin\Workflow\WorkflowState[]
    */
   protected $fromStates;
 
   /**
    * The "to" state.
    *
-   * @var \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState
+   * @var \Drupal\state_machine\Plugin\Workflow\WorkflowState
    */
   protected $toState;
 
@@ -47,9 +47,9 @@ class WorkflowTransition {
    *   The transition id.
    * @param string $label
    *   The transition label.
-   * @param \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState[] $from_states
+   * @param \Drupal\state_machine\Plugin\Workflow\WorkflowState[] $from_states
    *   The "from" states.
-   * @param \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState $to_state
+   * @param \Drupal\state_machine\Plugin\Workflow\WorkflowState $to_state
    *   The "to" state.
    */
   public function __construct($id, $label, array $from_states, WorkflowState $to_state) {
@@ -82,7 +82,7 @@ class WorkflowTransition {
   /**
    * Gets the "from" states.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState[]
+   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowState[]
    *   The "from" states.
    */
   public function getFromStates() {
@@ -92,7 +92,7 @@ class WorkflowTransition {
   /**
    * Gets the "to" state.
    *
-   * @return \Drupal\commerce_workflow\Plugin\Workflow\WorkflowState
+   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowState
    *   The "to" state.
    */
   public function getToState() {

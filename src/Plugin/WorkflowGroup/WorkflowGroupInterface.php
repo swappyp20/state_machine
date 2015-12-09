@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\Plugin\WorkflowGroup\WorkflowGroupInterface.
+ * Contains \Drupal\state_machine\Plugin\WorkflowGroup\WorkflowGroupInterface.
  */
 
-namespace Drupal\commerce_workflow\Plugin\WorkflowGroup;
+namespace Drupal\state_machine\Plugin\WorkflowGroup;
 
 /**
  * Defines the interface for workflow groups.

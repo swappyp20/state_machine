@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\Plugin\WorkflowGroup\WorkflowGroup.
+ * Contains \Drupal\state_machine\Plugin\WorkflowGroup\WorkflowGroup.
  */
 
-namespace Drupal\commerce_workflow\Plugin\WorkflowGroup;
+namespace Drupal\state_machine\Plugin\WorkflowGroup;
 
 use Drupal\Core\Plugin\PluginBase;
 

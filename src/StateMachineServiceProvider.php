@@ -2,19 +2,19 @@
 
 /**
  * @file
- * Contains \Drupal\commerce_workflow\CommerceWorkflowServiceProvider.
+ * Contains \Drupal\state_machine\StateMachineServiceProvider.
  */
 
-namespace Drupal\commerce_workflow;
+namespace Drupal\state_machine;
 
 use Drupal\Core\DependencyInjection\ServiceProviderInterface;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
-use Drupal\commerce_workflow\DependencyInjection\Compiler\WorkflowGuardsPass;
+use Drupal\state_machine\DependencyInjection\Compiler\WorkflowGuardsPass;
 
 /**
  * Registers the workflow guard compiler pass.
  */
-class CommerceWorkflowServiceProvider implements ServiceProviderInterface  {
+class StateMachineServiceProvider implements ServiceProviderInterface  {
 
   /**
    * {@inheritdoc}
