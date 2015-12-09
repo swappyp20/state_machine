@@ -7,7 +7,7 @@
 
 namespace Drupal\state_machine\Plugin\Workflow;
 
-use Drupal\state_machine\WorkflowGuard\WorkflowGuardFactoryInterface;
+use Drupal\state_machine\Guard\GuardFactoryInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\PluginBase;
@@ -19,9 +19,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class Workflow extends PluginBase implements WorkflowInterface, ContainerFactoryPluginInterface {
 
   /**
-   * The workflow guard factory.
+   * The guard factory.
    *
-   * @var \Drupal\state_machine\WorkflowGuard\WorkflowGuardFactoryInterface
+   * @var \Drupal\state_machine\Guard\GuardFactoryInterface
    */
   protected $guardFactory;
 
@@ -48,10 +48,10 @@ class Workflow extends PluginBase implements WorkflowInterface, ContainerFactory
    *   The workflow plugin_id.
    * @param mixed $plugin_definition
    *   The workflow plugin implementation definition.
-   * @param \Drupal\state_machine\WorkflowGuard\WorkflowGuardFactoryInterface $guard_factory
-   *   The workflow guard factory.
+   * @param \Drupal\state_machine\Guard\GuardFactoryInterface $guard_factory
+   *   The guard factory.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, WorkflowGuardFactoryInterface $guard_factory) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, GuardFactoryInterface $guard_factory) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
     $this->guardFactory = $guard_factory;
@@ -78,7 +78,7 @@ class Workflow extends PluginBase implements WorkflowInterface, ContainerFactory
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('state_machine.workflow_guard_factory')
+      $container->get('state_machine.guard_factory')
     );
   }
 

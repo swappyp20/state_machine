@@ -2,17 +2,17 @@
 
 /**
  * @file
- * Contains \Drupal\state_machine\WorkflowGuard\WorkflowGuardInterface.
+ * Contains \Drupal\state_machine\Guard\GuardInterface.
  */
 
-namespace Drupal\state_machine\WorkflowGuard;
+namespace Drupal\state_machine\Guard;
 
 use Drupal\state_machine\Plugin\Workflow\WorkflowInterface;
 use Drupal\state_machine\Plugin\Workflow\WorkflowTransition;
 use Drupal\Core\Entity\EntityInterface;
 
 /**
- * Defines the interface for workflow guards.
+ * Defines the interface for guards.
  *
  * Allows for custom logic controling the availability of specific transitions.
  * Transitions could be restricted based on the current user's permissions, a
@@ -20,7 +20,7 @@ use Drupal\Core\Entity\EntityInterface;
  *
  * By default, a transition is allowed unless at least one guard returns FALSE.
  */
-interface WorkflowGuardInterface {
+interface GuardInterface {
 
   /**
    * Checks whether the given transition is allowed.

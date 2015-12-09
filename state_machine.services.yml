@@ -1,6 +1,6 @@
 services:
-  state_machine.workflow_guard_factory:
-    class: Drupal\state_machine\WorkflowGuard\WorkflowGuardFactory
+  state_machine.guard_factory:
+    class: Drupal\state_machine\Guard\GuardFactory
     arguments: ['@service_container']
 
   plugin.manager.workflow:

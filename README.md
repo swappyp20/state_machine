@@ -50,12 +50,12 @@ default:
       to:   canceled
 ```
 
-Transitions can be further restricted by [guards](https://github.com/bojanz/state_machine/blob/8.x-1.x/src/WorkflowGuard/WorkflowGuardInterface.php), which are implemented as tagged services:
+Transitions can be further restricted by [guards](https://github.com/bojanz/state_machine/blob/8.x-1.x/src/Guard/GuardInterface.php), which are implemented as tagged services:
 ```yaml
   mymodule.fulfillment_guard:
-    class: Drupal\mymodule\WorkflowGuard\FulfillmentGuard
+    class: Drupal\mymodule\Guard\FulfillmentGuard
     tags:
-      - { name: state_machine.workflow_guard, group: order }
+      - { name: state_machine.guard, group: order }
 ```
 The group argument allows the guard factory to only instantiate the guards relevant
 to a specific workflow group.

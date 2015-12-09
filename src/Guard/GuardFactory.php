@@ -2,14 +2,17 @@
 
 /**
  * @file
- * Contains \Drupal\state_machine\WorkflowGuard\WorkflowGuardFactory.
+ * Contains \Drupal\state_machine\Guard\GuardFactory.
  */
 
-namespace Drupal\state_machine\WorkflowGuard;
+namespace Drupal\state_machine\Guard;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class WorkflowGuardFactory {
+/**
+ * Default implementation of the guard factory.
+ */
+class GuardFactory {
 
   /**
    * The service container.
@@ -26,7 +29,7 @@ class WorkflowGuardFactory {
   protected $guardServiceIds;
 
   /**
-   * Constructs a new WorkflowGuardFactory object.
+   * Constructs a new GuardFactory object.
    *
    * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
    *   The service container.

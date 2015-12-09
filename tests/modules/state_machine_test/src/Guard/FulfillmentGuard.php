@@ -2,17 +2,17 @@
 
 /**
  * @file
- * Contains \Drupal\state_machine_test\WorkflowGuard\FulfillmentGuard.
+ * Contains \Drupal\state_machine_test\Guard\FulfillmentGuard.
  */
 
-namespace Drupal\state_machine_test\WorkflowGuard;
+namespace Drupal\state_machine_test\Guard;
 
-use Drupal\state_machine\WorkflowGuard\WorkflowGuardInterface;
+use Drupal\state_machine\Guard\GuardInterface;
 use Drupal\state_machine\Plugin\Workflow\WorkflowInterface;
 use Drupal\state_machine\Plugin\Workflow\WorkflowTransition;
 use Drupal\Core\Entity\EntityInterface;
 
-class FulfillmentGuard implements WorkflowGuardInterface {
+class FulfillmentGuard implements GuardInterface {
 
   /**
    * {@inheritdoc}
