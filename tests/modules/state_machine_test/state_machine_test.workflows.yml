@@ -5,24 +5,16 @@ default:
   states:
     new:
       label: New
-    validation:
-      label: Validation
     fulfillment:
       label: Fulfilment
     completed:
       label: Completed
     canceled:
       label: Canceled
-    returned:
-      label: Returned
   transitions:
     create:
       label: Create
       from: [new]
-      to:   validation
-    validate:
-      label: Validate
-      from: [validation]
       to:   fulfillment
     fulfill:
       label: Fulfill
@@ -32,8 +24,3 @@ default:
       label: Cancel
       from: [new, validation, fulfillment]
       to:   canceled
-    return:
-      label: Return
-      from: [completed]
-      to:   returned
-

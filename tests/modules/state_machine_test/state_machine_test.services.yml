@@ -1,0 +1,4 @@
+  state_machine_test.fulfillment_guard:
+    class: Drupal\state_machine_test\WorkflowGuard\FulfillmentGuard
+    tags:
+      - { name: state_machine.workflow_guard, group: order }

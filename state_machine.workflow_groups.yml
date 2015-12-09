@@ -1,7 +1,0 @@
-order:
-  label: Order
-  entity_type: commerce_order
-
-order_payment:
-  label: Order (Payment)
-  entity_type: commerce_order
