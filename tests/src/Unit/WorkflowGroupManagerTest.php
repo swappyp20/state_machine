@@ -7,15 +7,40 @@
 
 namespace Drupal\Tests\state_machine\Unit;
 
+use Drupal\Component\Plugin\Discovery\DiscoveryInterface;
 use Drupal\Component\Serialization\Yaml;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\Discovery\YamlDiscovery;
+use Drupal\state_machine\WorkflowGroupManager;
+use Drupal\Tests\UnitTestCase;
 use org\bovigo\vfs\vfsStream;
 
 /**
  * @coversDefaultClass \Drupal\state_machine\WorkflowGroupManager
  * @group Workflow
  */
-class WorkflowGroupManagerTest extends WorkflowBaseTestCase {
+class WorkflowGroupManagerTest extends UnitTestCase {
+
+  /**
+   * The cache backend to use.
+   *
+   * @var \Drupal\Core\Cache\CacheBackendInterface|\PHPUnit_Framework_MockObject_MockObject
+   */
+  protected $cache;
+
+  /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface|\PHPUnit_Framework_MockObject_MockObject
+   */
+  protected $moduleHandler;
+
+  /**
+   * The plugin discovery.
+   *
+   * @var \Drupal\Component\Plugin\Discovery\DiscoveryInterface
+   */
+  protected $discovery;
 
   /**
    * The group manager under test.
@@ -41,10 +66,23 @@ class WorkflowGroupManagerTest extends WorkflowBaseTestCase {
   ];
 
   /**
-   * Provide a set of invalid config workflow groups to test the process
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+    // Prepare the default constructor arguments required by
+    // WorkflowGroupManager.
+    $this->cache = $this->getMock('Drupal\Core\Cache\CacheBackendInterface');
+    $this->moduleHandler = $this->prophesize(ModuleHandlerInterface::class);
+    $this->moduleHandler->moduleExists('state_machine_test')->willReturn(TRUE);
+    $this->groupManager = new TestWorkflowGroupManager($this->moduleHandler->reveal(), $this->cache);
+  }
+
+  /**
+   * Provide a set of incomplete config workflow groups to test the process
    * definitions.
    */
-  public function invalidConfigWorkflowGroups() {
+  public function configWorkflowGroups() {
     return [
       [['workflow_group_1' => [
         'entity_type' => 'commerce_order',
@@ -64,7 +102,7 @@ class WorkflowGroupManagerTest extends WorkflowBaseTestCase {
    * @covers ::processDefinition
    * @dataProvider invalidConfigWorkflowGroups
    */
-  public function testProcessInvalidDefinitions($group_config) {
+  public function testProcessIncompleteDefinitions($group_config) {
     vfsStream::setup('root');
     $file = Yaml::encode($group_config);
     vfsStream::create([
@@ -105,6 +143,50 @@ class WorkflowGroupManagerTest extends WorkflowBaseTestCase {
     $discovery = new YamlDiscovery('workflow_groups', ['state_machine_test' => vfsStream::url('root/state_machine_test')]);
     $this->groupManager->setDiscovery($discovery);
     $this->assertEquals($this->expectedDefinitions, $this->groupManager->getDefinitionsByEntityType('commerce_order'), 'Workflow group definition matches the expectations');
+  }
+
+  /**
+   * Tests that the workflow group manager returns the right object.
+   */
+  public function testProcessValidDefinition() {
+    vfsStream::setup('root');
+    $group_config = [
+      'order' => [
+        'label' => 'Order',
+        'entity_type' => 'commerce_order',
+      ]
+    ];
+    $file = Yaml::encode($group_config);
+    vfsStream::create([
+        'state_machine_test' => [
+          'state_machine_test.workflow_groups.yml' => $file,
+        ]]
+    );
+
+    $discovery = new YamlDiscovery('workflow_groups', ['state_machine_test' => vfsStream::url('root/state_machine_test')]);
+    $this->groupManager->setDiscovery($discovery);
+
+    /** @var $workflow_group \Drupal\state_machine\Plugin\WorkflowGroup\WorkflowGroup */
+    $workflow_group = $this->groupManager->createInstance('order');
+    $this->assertEquals('Order', $workflow_group->getLabel(), 'Workflow group label matches the expected one');
+    $this->assertEquals('commerce_order', $workflow_group->getEntityTypeId(), 'Workflow group entity type id matches the expected one');
+    $this->assertEquals('\Drupal\state_machine\Plugin\Workflow\Workflow', $workflow_group->getWorkflowClass(), 'Workflow group class matches the expected one');
+  }
+
+}
+
+/**
+ * Provides a testing version of WorkflowGroupManager with an empty constructor.
+ */
+class TestWorkflowGroupManager extends WorkflowGroupManager {
+  /**
+   * Sets the discovery for the manager.
+   *
+   * @param \Drupal\Component\Plugin\Discovery\DiscoveryInterface $discovery
+   *   The discovery object.
+   */
+  public function setDiscovery(DiscoveryInterface $discovery) {
+    $this->discovery = $discovery;
   }
 
 }
