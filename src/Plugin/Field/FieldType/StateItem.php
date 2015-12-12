@@ -274,14 +274,14 @@ class StateItem extends FieldItemBase implements StateItemInterface, OptionsProv
    *   The workflow, or FALSE if unknown at this time.
    */
   protected function loadWorkflow() {
-    $workflow = FALSE;
     if ($callback = $this->getSetting('workflow_callback')) {
-      $workflow = call_user_func($callback, $this->getEntity());
-      if (!$workflow) {
-        throw new \RuntimeException(sprintf('%s did not return a workflow.', $callback));
-      }
+      $workflow_id = call_user_func($callback, $this->getEntity());
     }
-    elseif ($workflow_id = $this->getSetting('workflow')) {
+    else {
+      $workflow_id = $this->getSetting('workflow');
+    }
+    $workflow = FALSE;
+    if (!empty($workflow_id)) {
       $workflow_manager = \Drupal::service('plugin.manager.workflow');
       $workflow = $workflow_manager->createInstance($workflow_id);
     }
