@@ -46,7 +46,7 @@ default:
       to: completed
     cancel:
       label: Cancel
-      from: [new, validation, fulfillment]
+      from: [new, fulfillment]
       to:   canceled
 ```
 
