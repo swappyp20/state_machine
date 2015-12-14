@@ -1,0 +1,9 @@
+field.field_settings.state:
+  type: mapping
+  mapping:
+    workflow:
+      type: string
+      label: Workflow
+    workflow_callback:
+      type: string
+      label: Workflow callback
