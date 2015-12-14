@@ -12,7 +12,7 @@ use Drupal\Tests\UnitTestCase;
 
 /**
  * @coversDefaultClass \Drupal\state_machine\Plugin\WorkflowGroup\WorkflowGroup
- * @group Workflow
+ * @group state_machine
  */
 class WorkflowGroupTest extends UnitTestCase {
 
