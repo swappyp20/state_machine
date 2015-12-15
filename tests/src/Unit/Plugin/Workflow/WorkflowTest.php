@@ -5,14 +5,12 @@
  * Contains \Drupal\Tests\state_machine\Unit\WorkflowTest.
  */
 
-namespace Drupal\Tests\state_machine\Unit;
+namespace Drupal\Tests\state_machine\Unit {
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\state_machine\Guard\GuardFactoryInterface;
 use Drupal\state_machine\Guard\GuardInterface;
 use Drupal\state_machine\Plugin\Workflow\Workflow;
-use Drupal\state_machine\Plugin\Workflow\WorkflowState;
-use Drupal\state_machine\Plugin\Workflow\WorkflowTransition;
 use Drupal\Tests\UnitTestCase;
 use Prophecy\Argument;
 
@@ -54,7 +52,6 @@ class WorkflowTest extends UnitTestCase {
     $workflow = new Workflow([], 'test', $plugin_definition, $guard_factory->reveal());
 
     $state = $workflow->getState('draft');
-    $this->assertEquals($state, $states['draft']);
     $this->assertEquals('draft', $state->getId());
     $this->assertEquals('Draft', $state->getLabel());
     $this->assertEquals(['draft' => $state], $workflow->getStates());
@@ -85,8 +82,7 @@ class WorkflowTest extends UnitTestCase {
     ];
     $workflow = new Workflow([], 'test', $plugin_definition, $guard_factory->reveal());
 
-    $transition = $workflow->getTransition('publish_draft');
-    $this->assertEquals($transition, $states['publish_draft']);
+    $transition = $workflow->getTransition('publish');
     $this->assertEquals('publish', $transition->getId());
     $this->assertEquals('Publish', $transition->getLabel());
     $this->assertEquals(['draft' => $workflow->getState('draft')], $transition->getFromStates());
@@ -132,7 +128,7 @@ class WorkflowTest extends UnitTestCase {
     $this->assertEquals(['publish' => $transition], $workflow->getPossibleTransitions('review'));
     $this->assertEquals([], $workflow->getPossibleTransitions('published'));
     // Passing an empty state should return all transitions.
-    $this->assertEquals($workflow->getTransitions(), $workflow->getPossibleTransitions());
+    $this->assertEquals($workflow->getTransitions(), $workflow->getPossibleTransitions(''));
   }
 
   /**
@@ -171,11 +167,11 @@ class WorkflowTest extends UnitTestCase {
       ->willReturn(TRUE);
     $guard_deny_publish = $this->prophesize(GuardInterface::class);
     $guard_deny_publish
-      ->allowed($transitions['publish'], Argument::any(), Argument::any())
-      ->willReturn(FALSE);
-    $guard_deny_publish
-      ->allowed(Argument::any(), Argument::any(), Argument::any())
-      ->willReturn(TRUE);
+      ->allowed(Argument::cetera())
+      ->will(function ($args) {
+        // Allow only the send_to_review transition.
+        return $args[0]->getId() == 'send_to_review';
+      });
     $guard_factory = $this->prophesize(GuardFactoryInterface::class);
     $guard_factory
       ->get('default')
@@ -183,9 +179,19 @@ class WorkflowTest extends UnitTestCase {
     $workflow = new Workflow([], 'test', $plugin_definition, $guard_factory->reveal());
 
     $entity = $this->prophesize(EntityInterface::class)->reveal();
-    $transition = $this->getTransition('send_to_review');
+    $transition = $workflow->getTransition('send_to_review');
     $this->assertEquals(['send_to_review' => $transition], $workflow->getAllowedTransitions('draft', $entity));
     $this->assertEquals([], $workflow->getAllowedTransitions('review', $entity));
   }
 
+}
+
+}
+
+namespace Drupal\state_machine\Plugin\Workflow {
+  if (!function_exists('t')) {
+    function t($string, array $args = []) {
+      return strtr($string, $args);
+    }
+  }
 }
