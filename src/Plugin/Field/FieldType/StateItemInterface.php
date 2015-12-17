@@ -23,6 +23,14 @@ interface StateItemInterface extends FieldItemInterface {
   public function getWorkflow();
 
   /**
+   * Gets the label of the current state.
+   *
+   * @return string
+   *   The label of the current state.
+   */
+  public function getLabel();
+
+  /**
    * Gets the allowed transitions for the current state.
    *
    * @return \Drupal\state_machine\Plugin\Workflow\WorkflowTransition[]

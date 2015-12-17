@@ -252,6 +252,21 @@ class StateItem extends FieldItemBase implements StateItemInterface, OptionsProv
   /**
    * {@inheritdoc}
    */
+  public function getLabel() {
+    $label = $this->value;
+    if ($workflow = $this->getWorkflow()) {
+      $state = $workflow->getState($this->value);
+      if ($state) {
+        $label = $state->getLabel();
+      }
+    }
+
+    return $label;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getTransitions() {
     $transitions = [];
     if ($workflow = $this->getWorkflow()) {
