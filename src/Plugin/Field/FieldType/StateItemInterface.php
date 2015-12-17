@@ -7,10 +7,12 @@
 
 namespace Drupal\state_machine\Plugin\Field\FieldType;
 
+use Drupal\Core\Field\FieldItemInterface;
+
 /**
- * Defines the interface for state item fields.
+ * Defines the interface for state field items.
  */
-interface StateItemInterface {
+interface StateItemInterface extends FieldItemInterface {
 
   /**
    * Gets the workflow used by the field.
