@@ -142,6 +142,10 @@ class StateItem extends FieldItemBase implements StateItemInterface, OptionsProv
    */
   public function setValue($values, $notify = TRUE) {
     if (empty($this->initialValue)) {
+      // If no array is given, then the method received just the state value.
+      if (isset($values) && !is_array($values)) {
+        $values = ['value' => $values];
+      }
       // Track the initial field value to allow isValid() to validate changes.
       $this->initialValue = $values['value'];
     }
