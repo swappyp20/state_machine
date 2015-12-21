@@ -8,6 +8,7 @@
 namespace Drupal\state_machine\Plugin\Field\FieldType;
 
 use Drupal\Core\Field\FieldItemInterface;
+use Drupal\state_machine\Plugin\Workflow\WorkflowTransition;
 
 /**
  * Defines the interface for state field items.
