@@ -100,15 +100,15 @@ class WorkflowGroupManagerTest extends UnitTestCase {
    *  Workflow group configuration that will be translated into YAML.
    *
    * @covers ::processDefinition
-   * @dataProvider invalidConfigWorkflowGroups
+   * @dataProvider configWorkflowGroups
    */
   public function testProcessIncompleteDefinitions($group_config) {
     vfsStream::setup('root');
     $file = Yaml::encode($group_config);
     vfsStream::create([
-        'state_machine_test' => [
-          'state_machine_test.workflow_groups.yml' => $file,
-        ]]
+      'state_machine_test' => [
+        'state_machine_test.workflow_groups.yml' => $file,
+      ]]
     );
 
     $discovery = new YamlDiscovery('workflow_groups', ['state_machine_test' => vfsStream::url('root/state_machine_test')]);

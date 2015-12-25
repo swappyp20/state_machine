@@ -18,8 +18,8 @@ class FulfillmentGuard implements GuardInterface {
    * {@inheritdoc}
    */
   public function allowed(WorkflowTransition $transition, WorkflowInterface $workflow, EntityInterface $entity) {
-    // @todo Add an additional condition here that makes sense for tests.
-    if ($transition->getId() == 'fulfill') {
+    // Don't allow entities in fulfillment to be cancelled.
+    if ($transition->getId() == 'cancel' && $entity->test_state->first()->value == 'fulfillment') {
       return FALSE;
     }
   }
