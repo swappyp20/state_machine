@@ -15,6 +15,14 @@ use Drupal\Core\Entity\EntityInterface;
 interface WorkflowInterface {
 
   /**
+   * Gets the workflow ID.
+   *
+   * @return string
+   *   The workflow ID.
+   */
+  public function getId();
+
+  /**
    * Gets the translated label.
    *
    * @return string

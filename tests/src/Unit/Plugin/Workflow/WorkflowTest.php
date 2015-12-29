@@ -21,6 +21,22 @@ use Prophecy\Argument;
 class WorkflowTest extends UnitTestCase {
 
   /**
+   * @covers ::getId
+   */
+  public function testGetId() {
+    $guard_factory = $this->prophesize(GuardFactoryInterface::class);
+    $plugin_definition = [
+      'id' => 'test id',
+      'label' => 'test label',
+      'states' => [],
+      'transitions' => [],
+    ];
+    $workflow = new Workflow([], 'test', $plugin_definition, $guard_factory->reveal());
+
+    $this->assertEquals('test id', $workflow->getId());
+  }
+
+  /**
    * @covers ::getLabel
    */
   public function testGetLabel() {

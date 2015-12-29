@@ -85,6 +85,13 @@ class Workflow extends PluginBase implements WorkflowInterface, ContainerFactory
   /**
    * {@inheritdoc}
    */
+  public function getId() {
+    return $this->pluginDefinition['id'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getLabel() {
     return $this->pluginDefinition['label'];
   }

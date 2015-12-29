@@ -13,6 +13,14 @@ namespace Drupal\state_machine\Plugin\WorkflowGroup;
 interface WorkflowGroupInterface {
 
   /**
+   * Gets the workflow group ID.
+   *
+   * @return string
+   *   The workflow group ID.
+   */
+  public function getId();
+
+  /**
    * Gets the translated label.
    *
    * @return string

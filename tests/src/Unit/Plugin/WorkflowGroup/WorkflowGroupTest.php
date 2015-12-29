@@ -46,6 +46,13 @@ class WorkflowGroupTest extends UnitTestCase {
   }
 
   /**
+   * @covers ::getId
+   */
+  public function testGetId() {
+    $this->assertEquals($this->definition['id'], $this->workflowGroup->getId());
+  }
+
+  /**
    * @covers ::getLabel
    */
   public function testGetLabel() {

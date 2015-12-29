@@ -17,6 +17,13 @@ class WorkflowGroup extends PluginBase implements WorkflowGroupInterface {
   /**
    * {@inheritdoc}
    */
+  public function getId() {
+    return $this->pluginDefinition['id'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getLabel() {
     return $this->pluginDefinition['label'];
   }
