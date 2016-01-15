@@ -7,7 +7,7 @@
 
 namespace Drupal\state_machine\Plugin\views\filter;
 
-use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\views\Plugin\views\filter\InOperator;
@@ -30,11 +30,11 @@ class State extends InOperator {
   protected $entityTypeManager;
 
   /**
-   * The entity type bundle info.
+   * The entity field manager.
    *
-   * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
    */
-  protected $entityTypeBundleInfo;
+  protected $entityFieldManager;
 
   /**
    * Constructs a new State object.
@@ -47,14 +47,14 @@ class State extends InOperator {
    *   The plugin implementation definition.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
-   * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entity_type_bundle_info
-   *   The entity type bundle info.
+   * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
+   *   The entity field manager.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager, EntityFieldManagerInterface $entity_field_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
     $this->entityTypeManager = $entity_type_manager;
-    $this->entityTypeBundleInfo = $entity_type_bundle_info;
+    $this->entityFieldManager = $entity_field_manager;
   }
 
   /**
@@ -66,7 +66,7 @@ class State extends InOperator {
       $plugin_id,
       $plugin_definition,
       $container->get('entity_type.manager'),
-      $container->get('entity_type.bundle.info')
+      $container->get('entity_field.manager')
     );
   }
 
@@ -109,18 +109,10 @@ class State extends InOperator {
     // to create an entity for each bundle in order to get the store field.
     $entity_type_id = $this->getEntityType();
     $entity_type = $this->entityTypeManager->getDefinition($entity_type_id);
-    $bundles = $this->getBundles($entity_type);
     $storage = $this->entityTypeManager->getStorage($entity_type_id);
+    $field_name = $this->getFieldName();
+    $bundles = $this->getBundles($entity_type, $field_name);
     $workflows = [];
-    // The name of the entity field is stored in different places for
-    // configurable and base fields.
-    if (isset($this->configuration['field_name'])) {
-      $field_name = $this->configuration['field_name'];
-    }
-    else {
-      $field_name = $this->configuration['entity field'];
-    }
-
     foreach ($bundles as $bundle) {
       $values = [];
       if ($bundle_key = $entity_type->getKey('bundle')) {
@@ -138,30 +130,52 @@ class State extends InOperator {
   }
 
   /**
-   * Gets the bundles for the current entity type.
+   * Gets the name of the entity field on which this filter operates.
+   *
+   * @return string
+   *   The field name.
+   */
+  public function getFieldName() {
+    if (isset($this->configuration['field_name'])) {
+      // Configurable field.
+      $field_name = $this->configuration['field_name'];
+    }
+    else {
+      // Base field.
+      $field_name = $this->configuration['entity field'];
+    }
+
+    return $field_name;
+  }
+
+  /**
+   * Gets the bundles for the current entity field.
    *
    * If the view has a non-exposed bundle filter, the bundles are taken from
-   * there. Otherwise, the full bundle list is used.
+   * there. Otherwise, the field's bundles are used.
    *
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
    *   The current entity type.
+   * @param string $field_name
+   *   The current field name.
    *
    * @return string[]
    *   The bundles.
    */
-  protected function getBundles(EntityTypeInterface $entity_type) {
+  protected function getBundles(EntityTypeInterface $entity_type, $field_name) {
     $bundles = [];
     $bundle_key = $entity_type->getKey('bundle');
     if ($bundle_key && isset($this->view->filter[$bundle_key])) {
       $filter = $this->view->filter[$bundle_key];
       if (!$filter->isExposed() && !empty($filter->value)) {
         // 'all' is added by Views and isn't a bundle.
-        $bundles = array_diff(['all'], $filter->value);
+        $bundles = array_diff($filter->value, ['all']);
       }
     }
-    // Fallback to the list of all bundles.
+    // Fallback to the list of bundles the field is attached to.
     if (empty($bundles)) {
-      $bundles = array_keys($this->entityTypeBundleInfo->getBundleInfo($entity_type->id()));
+      $map = $this->entityFieldManager->getFieldMap();
+      $bundles = $map[$entity_type->id()][$field_name]['bundles'];
     }
 
     return $bundles;
