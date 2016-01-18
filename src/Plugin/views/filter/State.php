@@ -75,10 +75,14 @@ class State extends InOperator {
    */
   public function getValueOptions() {
     if (!isset($this->valueOptions)) {
+      $entity_type_id = $this->getEntityType();
+      $entity_type = $this->entityTypeManager->getDefinition($entity_type_id);
+      $field_name = $this->getFieldName();
+      $workflows = $this->getWorkflows($entity_type, $field_name);
       // Merge the states of all workflows into one list, preserving their
       // initial positions.
       $states = [];
-      foreach ($this->getWorkflows() as $workflow) {
+      foreach ($workflows as $workflow) {
         $weight = 0;
         foreach ($workflow->getStates() as $state_id => $state) {
           $states[$state_id] = [
@@ -99,37 +103,6 @@ class State extends InOperator {
   }
 
   /**
-   * Gets the workflows used by the current field.
-   *
-   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowInterface[]
-   *   The workflows.
-   */
-  protected function getWorkflows() {
-    // Only the StoreItem knows which workflow it's using. This requires us
-    // to create an entity for each bundle in order to get the store field.
-    $entity_type_id = $this->getEntityType();
-    $entity_type = $this->entityTypeManager->getDefinition($entity_type_id);
-    $storage = $this->entityTypeManager->getStorage($entity_type_id);
-    $field_name = $this->getFieldName();
-    $bundles = $this->getBundles($entity_type, $field_name);
-    $workflows = [];
-    foreach ($bundles as $bundle) {
-      $values = [];
-      if ($bundle_key = $entity_type->getKey('bundle')) {
-        $values[$bundle_key] = $bundle;
-      }
-      /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
-      $entity = $storage->create($values);
-      if ($entity->hasField($field_name)) {
-        $workflow = $entity->get($field_name)->first()->getWorkflow();
-        $workflows[$workflow->getId()] = $workflow;
-      }
-    }
-
-    return $workflows;
-  }
-
-  /**
    * Gets the name of the entity field on which this filter operates.
    *
    * @return string
@@ -146,6 +119,39 @@ class State extends InOperator {
     }
 
     return $field_name;
+  }
+
+  /**
+   * Gets the workflows used the current entity field.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The current entity type.
+   * @param string $field_name
+   *   The current field name.
+   *
+   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowInterface[]
+   *   The workflows.
+   */
+  protected function getWorkflows(EntityTypeInterface $entity_type, $field_name) {
+    // Only the StoreItem knows which workflow it's using. This requires us
+    // to create an entity for each bundle in order to get the store field.
+    $storage = $this->entityTypeManager->getStorage($entity_type->id());
+    $bundles = $this->getBundles($entity_type, $field_name);
+    $workflows = [];
+    foreach ($bundles as $bundle) {
+      $values = [];
+      if ($bundle_key = $entity_type->getKey('bundle')) {
+        $values[$bundle_key] = $bundle;
+      }
+      /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+      $entity = $storage->create($values);
+      if ($entity->hasField($field_name)) {
+        $workflow = $entity->get($field_name)->first()->getWorkflow();
+        $workflows[$workflow->getId()] = $workflow;
+      }
+    }
+
+    return $workflows;
   }
 
   /**
