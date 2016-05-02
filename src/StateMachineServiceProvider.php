@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\state_machine\StateMachineServiceProvider.
- */
-
 namespace Drupal\state_machine;
 
 use Drupal\Core\DependencyInjection\ServiceProviderInterface;

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\state_machine\Plugin\Field\FieldType\StateItem.
- */
-
 namespace Drupal\state_machine\Plugin\Field\FieldType;
 
 use Drupal\Core\Field\FieldItemBase;

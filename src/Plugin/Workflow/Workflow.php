@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\state_machine\Plugin\Workflow\Workflow.
- */
-
 namespace Drupal\state_machine\Plugin\Workflow;
 
 use Drupal\state_machine\Guard\GuardFactoryInterface;

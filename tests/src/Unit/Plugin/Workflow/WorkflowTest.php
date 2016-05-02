@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\Tests\state_machine\Unit\WorkflowTest.
- */
-
 namespace Drupal\Tests\state_machine\Unit {
 
 use Drupal\Core\Entity\EntityInterface;

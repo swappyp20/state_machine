@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\state_machine_test\Guard\FulfillmentGuard.
- */
-
 namespace Drupal\state_machine_test\Guard;
 
 use Drupal\state_machine\Guard\GuardInterface;

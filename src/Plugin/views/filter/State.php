@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\state_machine\Plugin\views\filter\State.
- */
-
 namespace Drupal\state_machine\Plugin\views\filter;
 
 use Drupal\Core\Entity\EntityFieldManagerInterface;

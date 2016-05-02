@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\Tests\state_machine\Unit\Plugin\WorkflowGroup\WorkflowGroupTest.
- */
-
 namespace Drupal\Tests\state_machine\Unit\Plugin\WorkflowGroup;
 
 use Drupal\state_machine\Plugin\WorkflowGroup\WorkflowGroup;

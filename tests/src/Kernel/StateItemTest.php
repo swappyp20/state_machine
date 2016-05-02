@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\Tests\state_machine\StateItem\StateItemTest.
- */
-
 namespace Drupal\Tests\state_machine\StateItem;
 
 use Drupal\entity_test\Entity\EntityTest;

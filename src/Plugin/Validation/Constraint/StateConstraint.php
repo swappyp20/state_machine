@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\state_machine\Plugin\Validation\Constraint\StateConstraint.
- */
-
 namespace Drupal\state_machine\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;

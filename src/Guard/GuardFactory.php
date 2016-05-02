@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\state_machine\Guard\GuardFactory.
- */
-
 namespace Drupal\state_machine\Guard;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\state_machine\Plugin\WorkflowGroup\WorkflowGroup.
- */
-
 namespace Drupal\state_machine\Plugin\WorkflowGroup;
 
 use Drupal\Core\Plugin\PluginBase;

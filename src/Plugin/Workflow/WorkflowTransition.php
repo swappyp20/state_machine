@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\state_machine\Plugin\Workflow\WorkflowTransition.
- */
-
 namespace Drupal\state_machine\Plugin\Workflow;
 
 /**

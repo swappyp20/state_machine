@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\state_machine\Guard\GuardFactoryInterface.
- */
-
 namespace Drupal\state_machine\Guard;
 
 /**

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\state_machine\Plugin\WorkflowGroup\WorkflowInterface.
- */
-
 namespace Drupal\state_machine\Plugin\Workflow;
 
 use Drupal\Core\Entity\EntityInterface;

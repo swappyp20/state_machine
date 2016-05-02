@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\state_machine\WorkflowManager.
- */
-
 namespace Drupal\state_machine;
 
 use Drupal\Component\Plugin\Exception\PluginException;

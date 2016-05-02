@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\state_machine\WorkflowGroupManagerInterface.
- */
-
 namespace Drupal\state_machine;
 
 use Drupal\Component\Plugin\PluginManagerInterface;

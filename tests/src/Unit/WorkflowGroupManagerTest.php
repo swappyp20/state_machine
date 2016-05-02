@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\Tests\state_machine\Unit\WorkflowGroupManagerTest.
- */
-
 namespace Drupal\Tests\state_machine\Unit;
 
 use Drupal\Component\Plugin\Discovery\DiscoveryInterface;
