@@ -50,14 +50,14 @@ class WorkflowGroupManagerTest extends UnitTestCase {
    * @var array
    */
   protected $expectedDefinitions = [
-    'order' => [
-      'id' => 'order',
-      'label' => 'Order',
-      'entity_type' => 'commerce_order',
+    'entity_test' => [
+      'id' => 'entity_test',
+      'label' => 'Entity Test',
+      'entity_type' => 'entity_test',
       'class' => 'Drupal\state_machine\Plugin\WorkflowGroup\WorkflowGroup',
       'workflow_class' => '\Drupal\state_machine\Plugin\Workflow\Workflow',
       'provider' => 'state_machine_test',
-    ]
+    ],
   ];
 
   /**
@@ -80,10 +80,10 @@ class WorkflowGroupManagerTest extends UnitTestCase {
   public function configWorkflowGroups() {
     return [
       [['workflow_group_1' => [
-        'entity_type' => 'commerce_order',
+        'entity_type' => 'entity_test',
       ]]],
       [['workflow_group_2' => [
-        'label' => 'order',
+        'label' => 'Entity Test',
       ]]],
     ];
   }
@@ -123,21 +123,21 @@ class WorkflowGroupManagerTest extends UnitTestCase {
   public function testGetDefinitionsByEntityType() {
     vfsStream::setup('root');
     $group_config = [
-      'order' => [
-        'label' => 'Order',
-        'entity_type' => 'commerce_order',
-      ]
+      'entity_test' => [
+        'label' => 'Entity Test',
+        'entity_type' => 'entity_test',
+      ],
     ];
     $file = Yaml::encode($group_config);
     vfsStream::create([
-        'state_machine_test' => [
-          'state_machine_test.workflow_groups.yml' => $file,
-        ]]
-    );
+      'state_machine_test' => [
+        'state_machine_test.workflow_groups.yml' => $file,
+      ],
+    ]);
 
     $discovery = new YamlDiscovery('workflow_groups', ['state_machine_test' => vfsStream::url('root/state_machine_test')]);
     $this->groupManager->setDiscovery($discovery);
-    $this->assertEquals($this->expectedDefinitions, $this->groupManager->getDefinitionsByEntityType('commerce_order'), 'Workflow group definition matches the expectations');
+    $this->assertEquals($this->expectedDefinitions, $this->groupManager->getDefinitionsByEntityType('entity_test'), 'Workflow group definition matches the expectations');
   }
 
   /**
@@ -147,15 +147,16 @@ class WorkflowGroupManagerTest extends UnitTestCase {
     vfsStream::setup('root');
     $group_config = [
       'order' => [
-        'label' => 'Order',
-        'entity_type' => 'commerce_order',
-      ]
+        'label' => 'Entity Test',
+        'entity_type' => 'entity_test',
+      ],
     ];
     $file = Yaml::encode($group_config);
     vfsStream::create([
         'state_machine_test' => [
           'state_machine_test.workflow_groups.yml' => $file,
-        ]]
+        ],
+      ]
     );
 
     $discovery = new YamlDiscovery('workflow_groups', ['state_machine_test' => vfsStream::url('root/state_machine_test')]);
@@ -163,8 +164,8 @@ class WorkflowGroupManagerTest extends UnitTestCase {
 
     /** @var $workflow_group \Drupal\state_machine\Plugin\WorkflowGroup\WorkflowGroup */
     $workflow_group = $this->groupManager->createInstance('order');
-    $this->assertEquals('Order', $workflow_group->getLabel(), 'Workflow group label matches the expected one');
-    $this->assertEquals('commerce_order', $workflow_group->getEntityTypeId(), 'Workflow group entity type id matches the expected one');
+    $this->assertEquals('Entity Test', $workflow_group->getLabel(), 'Workflow group label matches the expected one');
+    $this->assertEquals('entity_test', $workflow_group->getEntityTypeId(), 'Workflow group entity type id matches the expected one');
     $this->assertEquals('\Drupal\state_machine\Plugin\Workflow\Workflow', $workflow_group->getWorkflowClass(), 'Workflow group class matches the expected one');
   }
 

@@ -1,7 +1,7 @@
 default:
   id: default
   label: Default
-  group: order
+  group: entity_test
   states:
     new:
       label: New

@@ -38,7 +38,7 @@ class StateItemTest extends KernelTestBase {
       'bundle' => 'entity_test',
       'settings' => [
         'workflow' => 'default',
-      ]
+      ],
     ]);
     $field->save();
   }
@@ -74,7 +74,7 @@ class StateItemTest extends KernelTestBase {
     $data = [];
     $data['new->fulfillment'] = ['new', ['create', 'cancel'], 'completed', 'create', 'fulfillment'];
     $data['new->canceled'] = ['new', ['create', 'cancel'], 'completed', 'cancel', 'canceled'];
-    $data['fulfillment->completed'] = ['fulfillment', ['fulfill'], 'new', 'fulfill', 'completed'];
+    $data['fulfillment->completed'] = ['fulfillment', ['fulfill', 'cancel'], 'new', 'fulfill', 'completed'];
     // A transition to canceled is forbidden by the FulfillmentGuard.
 
     return $data;

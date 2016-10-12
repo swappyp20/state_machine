@@ -24,9 +24,9 @@ class WorkflowGroupTest extends UnitTestCase {
    * @var array
    */
   protected $definition = [
-    'id' => 'order',
-    'label' => 'Order',
-    'entity_type' => 'commerce_order',
+    'id' => 'entity_test',
+    'label' => 'Entity Test',
+    'entity_type' => 'entity_test',
     'class' => 'Drupal\state_machine\Plugin\WorkflowGroup\WorkflowGroup',
     'workflow_class' => '\Drupal\state_machine\Plugin\Workflow\Workflow',
     'provider' => 'state_machine_test',
