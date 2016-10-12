@@ -223,10 +223,11 @@ class StateItem extends FieldItemBase implements StateItemInterface, OptionsProv
       // The workflow is not known yet, the field is probably being created.
       return [];
     }
-    $allowed_states = [
-      // The current state is always allowed.
-      $value => $workflow->getState($value),
-    ];
+    $allowed_states = [];
+    if (!empty($value) && ($current_state = $workflow->getState($value))) {
+      $allowed_states[$value] = $current_state;
+    }
+
     $transitions = $workflow->getAllowedTransitions($value, $this->getEntity());
     foreach ($transitions as $transition) {
       $state = $transition->getToState();

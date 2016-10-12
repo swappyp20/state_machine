@@ -80,4 +80,22 @@ class StateItemTest extends KernelTestBase {
     return $data;
   }
 
+  /**
+   * @dataProvider providerSettableOptions
+   */
+  public function testSettableOptions($initial_state, $available_options) {
+    $entity = EntityTest::create(['test_state' => ['value' => $initial_state]]);
+    $this->assertEquals($initial_state, $entity->test_state->value);
+    // An invalid state should not have any settable options.
+    $this->assertEquals($available_options, $entity->test_state->get(0)->getSettableOptions());
+  }
+
+  public function providerSettableOptions() {
+    $data = [];
+    $data['new'] = ['new', ['canceled' => 'Canceled', 'fulfillment' => 'Fulfilment', 'new' => 'New']];
+    $data['invalid'] = ['invalid', []];
+
+    return $data;
+  }
+
 }
