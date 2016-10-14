@@ -98,4 +98,17 @@ interface WorkflowInterface {
    */
   public function getAllowedTransitions($state_id, EntityInterface $entity);
 
+  /**
+   * Finds the workflow transition for moving between two given states.
+   *
+   * @param string $from_state_id
+   *   The ID of the "from" state.
+   * @param string $to_state_id
+   *   The ID of the "to" state.
+   *
+   * @return \Drupal\state_machine\Plugin\Workflow\WorkflowTransition|null
+   *   The transition, or NULL if not found.
+   */
+  public function findTransition($from_state_id, $to_state_id);
+
 }
