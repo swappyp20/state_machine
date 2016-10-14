@@ -158,6 +158,19 @@ class Workflow extends PluginBase implements WorkflowInterface, ContainerFactory
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function findTransition($from_state_id, $to_state_id) {
+    foreach ($this->getPossibleTransitions($from_state_id) as $transition) {
+      if ($transition->getToState()->getId() == $to_state_id) {
+        return $transition;
+      }
+    }
+
+    return FALSE;
+  }
+
+  /**
    * Gets whether the given transition is allowed.
    *
    * @param \Drupal\state_machine\Plugin\Workflow\WorkflowTransition $transition

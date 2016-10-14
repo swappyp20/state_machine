@@ -195,6 +195,42 @@ class WorkflowTest extends UnitTestCase {
     $this->assertEquals([], $workflow->getAllowedTransitions('review', $entity));
   }
 
+  /**
+   * @covers ::findTransition
+   */
+  public function testFindTransition() {
+    $guard_factory = $this->prophesize(GuardFactoryInterface::class);
+    $plugin_definition = [
+      'states' => [
+        'draft' => [
+          'label' => 'Draft',
+        ],
+        'review' => [
+          'label' => 'Review',
+        ],
+        'published' => [
+          'label' => 'Published',
+        ],
+      ],
+      'transitions' => [
+        'send_to_review' => [
+          'label' => 'Send to review',
+          'from' => ['draft'],
+          'to' => 'review',
+        ],
+        'publish' => [
+          'label' => 'Publish',
+          'from' => ['review'],
+          'to' => 'published',
+        ],
+      ],
+    ];
+    $workflow = new Workflow([], 'test', $plugin_definition, $guard_factory->reveal());
+
+    $transition = $workflow->getTransition('send_to_review');
+    $this->assertEquals($transition, $workflow->findTransition('draft', 'review'));
+    $this->assertFalse($workflow->findTransition('foo', 'bar'));
+  }
 }
 
 }

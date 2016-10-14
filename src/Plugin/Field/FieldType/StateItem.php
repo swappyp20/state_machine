@@ -9,6 +9,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\OptionsProviderInterface;
 use Drupal\Core\Validation\Plugin\Validation\Constraint\AllowedValuesConstraint;
+use Drupal\state_machine\Event\WorkflowTransitionEvent;
 use Drupal\state_machine\Plugin\Workflow\WorkflowTransition;
 
 /**
@@ -142,17 +143,11 @@ class StateItem extends FieldItemBase implements StateItemInterface, OptionsProv
       if (isset($values) && !is_array($values)) {
         $values = ['value' => $values];
       }
-      // Track the initial field value to allow isValid() to validate changes.
+      // Track the initial field value to allow isValid() to validate changes
+      // and to react to transitions.
       $this->initialValue = $values['value'];
     }
     parent::setValue($values, $notify);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function postSave($update) {
-    $this->initialValue = $this->value;
   }
 
   /**
@@ -303,6 +298,45 @@ class StateItem extends FieldItemBase implements StateItemInterface, OptionsProv
     }
 
     return $workflow;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function preSave() {
+    if ($this->value != $this->initialValue) {
+      $this->triggerTransitionEvent('pre_transition');
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function postSave($update) {
+    if ($this->value != $this->initialValue) {
+      $this->triggerTransitionEvent('post_transition');
+    }
+    $this->initialValue = $this->value;
+  }
+
+  /**
+   * Triggers a transition event for the given phase.
+   *
+   * @param string $phase
+   *   The phase that is triggering the event: pre_transition/post_transition.
+   */
+  protected function triggerTransitionEvent($phase) {
+    // Fire an event for the state that has been entered.
+    $from_state = $this->getWorkflow()->getState($this->initialValue);
+    $to_state = $this->getWorkflow()->getState($this->value);
+    /** @var \Drupal\state_machine\Plugin\Workflow\WorkflowInterface $workflow */
+    $workflow = $this->getWorkflow();
+    $transition = $workflow->findTransition($this->initialValue, $this->value);
+    $event = new WorkflowTransitionEvent($from_state, $to_state, $this->getEntity());
+    \Drupal::getContainer()->get('event_dispatcher')->dispatch(
+      $workflow->getGroup() . '.' . $transition->getId() . '.' . $phase,
+      $event
+    );
   }
 
 }
