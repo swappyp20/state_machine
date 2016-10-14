@@ -167,7 +167,7 @@ class Workflow extends PluginBase implements WorkflowInterface, ContainerFactory
       }
     }
 
-    return FALSE;
+    return NULL;
   }
 
   /**

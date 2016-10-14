@@ -8,7 +8,7 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * Tests the StateChangeEvent.
+ * Tests the TransitionEvent.
  *
  * @group state_machine
  */
@@ -53,11 +53,11 @@ class WorkflowTransitionEventTest extends KernelTestBase {
   }
 
   /**
-   * Tests the state change event dispatch and test subscriber.
+   * Tests the transition event.
    */
-  public function testStateChangeEvent() {
+  public function testTransitionEvent() {
     $entity = EntityTest::create([
-      'name' => 'Tester',
+      'name' => 'Test entity',
       'test_state' => ['value' => 'new'],
     ]);
     $entity->save();
@@ -72,8 +72,8 @@ class WorkflowTransitionEventTest extends KernelTestBase {
 
     $messages = drupal_get_messages();
     $message = reset($messages);
-    $this->assertEquals('Tester was Canceled at Pre-transition.', (string) $message[0]);
-    $this->assertEquals('Tester was Canceled at Post-transition.', (string) $message[1]);
+    $this->assertEquals('Test entity was Canceled at pre-transition (workflow: default).', (string) $message[0]);
+    $this->assertEquals('Test entity was Canceled at post-transition (workflow: default).', (string) $message[1]);
   }
 
 }

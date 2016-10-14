@@ -229,7 +229,7 @@ class WorkflowTest extends UnitTestCase {
 
     $transition = $workflow->getTransition('send_to_review');
     $this->assertEquals($transition, $workflow->findTransition('draft', 'review'));
-    $this->assertFalse($workflow->findTransition('foo', 'bar'));
+    $this->assertNull($workflow->findTransition('foo', 'bar'));
   }
 }
 

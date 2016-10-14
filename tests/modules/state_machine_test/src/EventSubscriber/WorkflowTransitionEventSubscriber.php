@@ -6,9 +6,6 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\state_machine\Event\WorkflowTransitionEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-/**
- * Test subscriber to state changes.
- */
 class WorkflowTransitionEventSubscriber implements EventSubscriberInterface {
 
   /**
@@ -16,39 +13,37 @@ class WorkflowTransitionEventSubscriber implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     $events = [
-      'entity_test.cancel.pre_transition' => 'cancelPresaveReaction',
-      'entity_test.cancel.post_transition' => 'cancelPostsaveReaction',
+      'entity_test.cancel.pre_transition' => 'onPreTransition',
+      'entity_test.cancel.post_transition' => 'onPostTransition',
     ];
     return $events;
   }
 
   /**
-   * Reacts to entity entering cancel state in the PreSave phase.
+   * Reacts to the 'entity_test.cancel.pre_transition' event.
    *
    * @param \Drupal\state_machine\Event\WorkflowTransitionEvent $event
-   *   The state change event.
+   *   The transition event.
    */
-  public function cancelPresaveReaction(WorkflowTransitionEvent $event) {
-    $state = $event->getToState();
-    $entity = $event->getEntity();
-    drupal_set_message(new TranslatableMarkup('@entity_label was @state_label at Pre-transition.', [
-      '@entity_label' => $entity->label(),
-      '@state_label' => $state->getLabel(),
+  public function onPreTransition(WorkflowTransitionEvent $event) {
+    drupal_set_message(new TranslatableMarkup('@entity_label was @state_label at pre-transition (workflow: @workflow).', [
+      '@entity_label' => $event->getEntity()->label(),
+      '@state_label' => $event->getToState()->getLabel(),
+      '@workflow' => $event->getWorkflow()->getId(),
     ]));
   }
 
   /**
-   * Reacts to entity entering cancel state in the PreSave phase.
+   * Reacts to the 'entity_test.cancel.post_transition' event.
    *
    * @param \Drupal\state_machine\Event\WorkflowTransitionEvent $event
-   *   The state change event.
+   *   The transition event.
    */
-  public function cancelPostsaveReaction(WorkflowTransitionEvent $event) {
-    $state = $event->getToState();
-    $entity = $event->getEntity();
-    drupal_set_message(new TranslatableMarkup('@entity_label was @state_label at Post-transition.', [
-      '@entity_label' => $entity->label(),
-      '@state_label' => $state->getLabel(),
+  public function onPostTransition(WorkflowTransitionEvent $event) {
+    drupal_set_message(new TranslatableMarkup('@entity_label was @state_label at post-transition (workflow: @workflow).', [
+      '@entity_label' => $event->getEntity()->label(),
+      '@state_label' => $event->getToState()->getLabel(),
+      '@workflow' => $event->getWorkflow()->getId(),
     ]));
   }
 

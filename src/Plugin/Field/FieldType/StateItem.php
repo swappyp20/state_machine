@@ -305,7 +305,7 @@ class StateItem extends FieldItemBase implements StateItemInterface, OptionsProv
    */
   public function preSave() {
     if ($this->value != $this->initialValue) {
-      $this->triggerTransitionEvent('pre_transition');
+      $this->dispatchTransitionEvent('pre_transition');
     }
   }
 
@@ -314,29 +314,30 @@ class StateItem extends FieldItemBase implements StateItemInterface, OptionsProv
    */
   public function postSave($update) {
     if ($this->value != $this->initialValue) {
-      $this->triggerTransitionEvent('post_transition');
+      $this->dispatchTransitionEvent('post_transition');
     }
     $this->initialValue = $this->value;
   }
 
   /**
-   * Triggers a transition event for the given phase.
+   * Dispatches a transition event for the given phase.
    *
    * @param string $phase
-   *   The phase that is triggering the event: pre_transition/post_transition.
+   *   The phase: pre_transition OR post_transition.
    */
-  protected function triggerTransitionEvent($phase) {
-    // Fire an event for the state that has been entered.
+  protected function dispatchTransitionEvent($phase) {
     $from_state = $this->getWorkflow()->getState($this->initialValue);
     $to_state = $this->getWorkflow()->getState($this->value);
     /** @var \Drupal\state_machine\Plugin\Workflow\WorkflowInterface $workflow */
     $workflow = $this->getWorkflow();
     $transition = $workflow->findTransition($this->initialValue, $this->value);
-    $event = new WorkflowTransitionEvent($from_state, $to_state, $this->getEntity());
-    \Drupal::getContainer()->get('event_dispatcher')->dispatch(
-      $workflow->getGroup() . '.' . $transition->getId() . '.' . $phase,
-      $event
-    );
+    if ($transition) {
+      // For example: 'commerce_order.place.pre_transition'.
+      $event_id = $workflow->getGroup() . '.' . $transition->getId() . '.' . $phase;
+      $event = new WorkflowTransitionEvent($from_state, $to_state, $workflow, $this->getEntity());
+      $event_dispatcher = \Drupal::getContainer()->get('event_dispatcher');
+      $event_dispatcher->dispatch($event_id, $event);
+    }
   }
 
 }
